@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "github.com/rl404/hibiki/docs"
 	"github.com/rl404/hibiki/internal/utils"
 	"github.com/spf13/cobra"
 )
