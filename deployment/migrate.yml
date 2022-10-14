@@ -1,0 +1,9 @@
+version: "2.4"
+
+services:
+  hibiki-migrate:
+    container_name: hibiki-migrate
+    image: rl404/hibiki:latest
+    command: ./hibiki migrate
+    env_file: ./../.env
+    network_mode: host

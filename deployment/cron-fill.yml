@@ -1,0 +1,9 @@
+version: "2.4"
+
+services:
+  hibiki-cron-fill:
+    container_name: hibiki-cron-fill
+    image: rl404/hibiki:latest
+    command: ./hibiki cron fill
+    env_file: ./../.env
+    network_mode: host

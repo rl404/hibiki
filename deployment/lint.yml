@@ -1,0 +1,9 @@
+version: "2.4"
+
+services:
+  hibiki-lint:
+    container_name: hibiki-lint
+    image: golangci/golangci-lint:latest
+    working_dir: /hibiki
+    volumes:
+      - ../:/hibiki
