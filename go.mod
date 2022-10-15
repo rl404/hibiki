@@ -10,9 +10,9 @@ require (
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.3
 	github.com/rl404/fairy v0.20.1
 	github.com/rl404/nagato v0.2.0
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/swaggo/http-swagger v1.3.3
-	github.com/swaggo/swag v1.8.1
+	github.com/swaggo/swag v1.8.6
 	go.mongodb.org/mongo-driver v1.10.3
 	golang.org/x/text v0.3.8
 	google.golang.org/grpc v1.50.0
@@ -44,7 +44,7 @@ require (
 	github.com/google/go-cmp v0.5.8 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.5.1 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
