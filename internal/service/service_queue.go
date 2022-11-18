@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/rl404/hibiki/internal/domain/publisher/entity"
@@ -98,7 +97,7 @@ func (s *service) QueueMissingManga(ctx context.Context, limit int) (int, int, e
 		if idMap[id] {
 			continue
 		}
-		fmt.Println(id)
+
 		if err := s.publisher.PublishParseManga(ctx, entity.ParseMangaRequest{ID: id}); err != nil {
 			return cnt, http.StatusInternalServerError, errors.Wrap(ctx, err)
 		}
