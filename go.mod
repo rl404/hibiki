@@ -14,7 +14,7 @@ require (
 	github.com/swaggo/http-swagger v1.3.3
 	github.com/swaggo/swag v1.8.9
 	go.mongodb.org/mongo-driver v1.11.1
-	golang.org/x/text v0.5.0
+	golang.org/x/text v0.6.0
 	google.golang.org/grpc v1.51.0
 )
 
