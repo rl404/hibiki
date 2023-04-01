@@ -50,6 +50,7 @@ Powered by my [nagato](https://github.com/rl404/nagato) library and [MyAnimeList
 - [Go](https://go.dev/)
 - [MyAnimeList](https://myanimelist.net/) [client id](https://myanimelist.net/apiconfig)
 - [MongoDB](https://www.mongodb.com/)
+- PubSub ([NSQ](https://nsq.io/)/[RabbitMQ](https://www.rabbitmq.com/)/[Redis](https://redis.io/)/[Google PubSub](https://cloud.google.com/pubsub))
 - (optional) Cache ([Redis](https://redis.io/)/[Memcache](https://memcached.org/))
 - (optional) [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
 - (optional) [Newrelic](https://newrelic.com/) license key
