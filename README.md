@@ -48,6 +48,7 @@ Powered by my [nagato](https://github.com/rl404/nagato) library and [MyAnimeList
 ## Requirement
 
 - [Go](https://go.dev/)
+- [MyAnimeList](https://myanimelist.net/) [client id](https://myanimelist.net/apiconfig)
 - [MongoDB](https://www.mongodb.com/)
 - (optional) Cache ([Redis](https://redis.io/)/[Memcache](https://memcached.org/))
 - (optional) [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
