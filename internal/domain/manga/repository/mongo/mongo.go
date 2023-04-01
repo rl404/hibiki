@@ -100,6 +100,9 @@ func (m *Mongo) IsOld(ctx context.Context, id int64) (bool, int, error) {
 func (m *Mongo) GetMaxID(ctx context.Context) (int64, int, error) {
 	var manga manga
 	if err := m.db.FindOne(ctx, bson.M{}, options.FindOne().SetSort(bson.M{"id": -1}).SetProjection(bson.M{"id": 1})).Decode(&manga); err != nil {
+		if _errors.Is(err, mongo.ErrNoDocuments) {
+			return 1, http.StatusOK, nil
+		}
 		return 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
 	}
 	return manga.ID, http.StatusOK, nil
