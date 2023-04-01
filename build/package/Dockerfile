@@ -4,7 +4,7 @@ LABEL stage="hibiki_builder"
 WORKDIR /hibiki
 COPY . .
 WORKDIR /hibiki/cmd/hibiki
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -mod vendor -o hibiki
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -mod vendor -o hibiki
 
 # New stage from scratch
 FROM alpine:3.16
