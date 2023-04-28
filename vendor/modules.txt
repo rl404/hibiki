@@ -86,7 +86,7 @@ github.com/go-redis/redis/v8/internal/util
 # github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
 ## explicit
 github.com/golang/groupcache/lru
-# github.com/golang/protobuf v1.5.2
+# github.com/golang/protobuf v1.5.3
 ## explicit; go 1.9
 github.com/golang/protobuf/jsonpb
 github.com/golang/protobuf/proto
@@ -156,8 +156,8 @@ github.com/mattn/go-isatty
 # github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe
 ## explicit
 github.com/montanaflynn/stats
-# github.com/newrelic/go-agent/v3 v3.21.0
-## explicit; go 1.17
+# github.com/newrelic/go-agent/v3 v3.21.1
+## explicit; go 1.18
 github.com/newrelic/go-agent/v3/internal
 github.com/newrelic/go-agent/v3/internal/cat
 github.com/newrelic/go-agent/v3/internal/com_newrelic_trace_v1
