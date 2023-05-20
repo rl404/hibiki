@@ -30,6 +30,7 @@ type related struct {
 	ID       int64           `json:"id"`
 	Title    string          `json:"title"`
 	Relation entity.Relation `json:"relation"  swaggertype:"string"`
+	Picture  string          `jspn:"picture"`
 }
 
 type author struct {
@@ -58,6 +59,7 @@ func (c *service) mangaFromEntity(mangaDB *entity.Manga) Manga {
 			ID:       r.ID,
 			Title:    r.Title,
 			Relation: r.Relation,
+			Picture:  r.Picture,
 		}
 	}
 

@@ -67,6 +67,7 @@ type related struct {
 	ID       int64           `bson:"id"`
 	Title    string          `bson:"title"`
 	Relation entity.Relation `bson:"relation"`
+	Picture  string          `bson:"picture"`
 }
 
 type author struct {
@@ -95,6 +96,7 @@ func (m *manga) toEntity() *entity.Manga {
 			ID:       r.ID,
 			Title:    r.Title,
 			Relation: r.Relation,
+			Picture:  r.Picture,
 		}
 	}
 

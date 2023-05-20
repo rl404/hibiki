@@ -31,10 +31,15 @@ func MangaFromNagato(ctx context.Context, manga *nagato.Manga) (*Manga, error) {
 
 	related := make([]Related, len(manga.RelatedManga))
 	for i, r := range manga.RelatedManga {
+		pic := r.Manga.MainPicture.Large
+		if pic == "" {
+			pic = r.Manga.MainPicture.Medium
+		}
 		related[i] = Related{
 			ID:       int64(r.Manga.ID),
 			Title:    r.Manga.Title,
 			Relation: nagatoToRelation(r.RelationType),
+			Picture:  pic,
 		}
 	}
 

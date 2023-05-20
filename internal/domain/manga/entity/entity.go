@@ -55,6 +55,7 @@ type Related struct {
 	ID       int64
 	Title    string
 	Relation Relation
+	Picture  string
 }
 
 // Author is entity for author.
