@@ -140,6 +140,8 @@ definitions:
     properties:
       id:
         type: integer
+      picture:
+        type: string
       relation:
         type: string
       title:

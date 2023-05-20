@@ -375,6 +375,9 @@
                 "id": {
                     "type": "integer"
                 },
+                "picture": {
+                    "type": "string"
+                },
                 "relation": {
                     "type": "string"
                 },
