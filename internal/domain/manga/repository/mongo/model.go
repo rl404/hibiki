@@ -172,6 +172,7 @@ func (m *Mongo) mangaFromEntity(ma entity.Manga) *manga {
 			ID:       r.ID,
 			Title:    r.Title,
 			Relation: r.Relation,
+			Picture:  r.Picture,
 		}
 	}
 
