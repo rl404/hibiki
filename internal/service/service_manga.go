@@ -81,7 +81,7 @@ func (s *service) validateID(ctx context.Context, id int64) (int, error) {
 type GetMangaRequest struct {
 	Mode  entity.SearchMode `validate:"oneof=all simple" mod:"default=all,trim,lcase"`
 	Title string            `validate:"omitempty,gte=3" mod:"trim,lcase"`
-	Sort  string            `validate:"oneof=title -title" mod:"default=name,trim,lcase"`
+	Sort  string            `validate:"oneof=title -title" mod:"default=title,trim,lcase"`
 	Page  int               `validate:"required,gte=1" mod:"default=1"`
 	Limit int               `validate:"required,gte=-1" mod:"default=20"`
 }
