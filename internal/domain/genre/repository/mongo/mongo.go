@@ -9,6 +9,7 @@ import (
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Mongo contains functions for genre mongodb.
@@ -62,4 +63,43 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Genre) (int, erro
 	}
 
 	return http.StatusOK, nil
+}
+
+// GetAll to get all.
+func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity.Genre, int, int, error) {
+	filter := bson.M{}
+	opt := options.Find().SetSort(bson.M{"name": 1}).SetSkip(int64((data.Page - 1) * data.Limit)).SetLimit(int64(data.Limit))
+
+	if data.Name != "" {
+		filter = bson.M{"name": bson.M{"$regex": data.Name, "$options": "i"}}
+	}
+
+	if data.Limit < 0 {
+		opt.SetLimit(0)
+	}
+
+	c, err := m.db.Find(ctx, filter, opt)
+	if err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+	defer c.Close(ctx)
+
+	var genres []entity.Genre
+	for c.Next(ctx) {
+		var genre genre
+		if err := c.Decode(&genre); err != nil {
+			return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		}
+		genres = append(genres, entity.Genre{
+			ID:   genre.ID,
+			Name: genre.Name,
+		})
+	}
+
+	total, err := m.db.CountDocuments(ctx, filter, options.Count())
+	if err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	return genres, int(total), http.StatusOK, nil
 }

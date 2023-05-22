@@ -23,15 +23,22 @@ import (
 // @failure 400 {object} utils.Response
 // @failure 500 {object} utils.Response
 // @router /manga [get]
-func (api *API) handleGetMangaByID(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseInt(chi.URLParam(r, "mangaID"), 10, 64)
-	if err != nil {
-		utils.ResponseWithJSON(w, http.StatusBadRequest, nil, errors.Wrap(r.Context(), errors.ErrInvalidMangaID, err))
-		return
-	}
+func (api *API) handleGetManga(w http.ResponseWriter, r *http.Request) {
+	mode := r.URL.Query().Get("mode")
+	title := r.URL.Query().Get("title")
+	sort := r.URL.Query().Get("sort")
+	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 
-	manga, code, err := api.service.GetMangaByID(r.Context(), id)
-	utils.ResponseWithJSON(w, code, manga, errors.Wrap(r.Context(), err))
+	manga, pagination, code, err := api.service.GetManga(r.Context(), service.GetMangaRequest{
+		Mode:  entity.SearchMode(mode),
+		Title: title,
+		Sort:  sort,
+		Page:  page,
+		Limit: limit,
+	})
+
+	utils.ResponseWithJSON(w, code, manga, errors.Wrap(r.Context(), err), pagination)
 }
 
 // @summary Get manga by id.
@@ -44,20 +51,13 @@ func (api *API) handleGetMangaByID(w http.ResponseWriter, r *http.Request) {
 // @failure 404 {object} utils.Response
 // @failure 500 {object} utils.Response
 // @router /manga/{mangaID} [get]
-func (api *API) handleGetManga(w http.ResponseWriter, r *http.Request) {
-	mode := r.URL.Query().Get("mode")
-	title := r.URL.Query().Get("title")
-	sort := r.URL.Query().Get("sort")
-	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
-	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+func (api *API) handleGetMangaByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(chi.URLParam(r, "mangaID"), 10, 64)
+	if err != nil {
+		utils.ResponseWithJSON(w, http.StatusBadRequest, nil, errors.Wrap(r.Context(), errors.ErrInvalidMangaID, err))
+		return
+	}
 
-	vtubers, pagination, code, err := api.service.GetManga(r.Context(), service.GetMangaRequest{
-		Mode:  entity.SearchMode(mode),
-		Title: title,
-		Sort:  sort,
-		Page:  page,
-		Limit: limit,
-	})
-
-	utils.ResponseWithJSON(w, code, vtubers, errors.Wrap(r.Context(), err), pagination)
+	manga, code, err := api.service.GetMangaByID(r.Context(), id)
+	utils.ResponseWithJSON(w, code, manga, errors.Wrap(r.Context(), err))
 }

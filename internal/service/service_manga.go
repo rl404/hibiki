@@ -33,7 +33,7 @@ type manga struct {
 	Genres            []genre           `json:"genres"`
 	Pictures          []string          `json:"pictures"`
 	Related           []related         `json:"related"`
-	Authors           []author          `json:"authors"`
+	Authors           []mangaAuthor     `json:"authors"`
 	Serialization     []magazine        `json:"serialization"`
 	UpdatedAt         time.Time         `json:"updated_at"`
 }

@@ -26,6 +26,14 @@ func (a *author) MarshalBSON() ([]byte, error) {
 	return bson.Marshal((*a2)(a))
 }
 
+func (a *author) toEntity() entity.Author {
+	return entity.Author{
+		ID:        a.ID,
+		FirstName: a.FirstName,
+		LastName:  a.LastName,
+	}
+}
+
 func (m *Mongo) fromEntity(data entity.Author) *author {
 	return &author{
 		ID:        data.ID,

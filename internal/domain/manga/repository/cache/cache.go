@@ -98,7 +98,7 @@ type getAllCache struct {
 	Total int
 }
 
-// GetAll to get vtuber list.
+// GetAll to get manga list.
 func (c *Cache) GetAll(ctx context.Context, req entity.GetAllRequest) (_ []entity.Manga, _ int, code int, err error) {
 	key := utils.GetKey("manga", utils.QueryToKey(req))
 

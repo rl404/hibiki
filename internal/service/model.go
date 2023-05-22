@@ -32,7 +32,7 @@ type related struct {
 	Picture  string          `jspn:"picture"`
 }
 
-type author struct {
+type mangaAuthor struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 	Role string `json:"role"`
@@ -62,9 +62,9 @@ func (c *service) mangaFromEntity(mangaDB *entity.Manga) manga {
 		}
 	}
 
-	authors := make([]author, len(mangaDB.Authors))
+	authors := make([]mangaAuthor, len(mangaDB.Authors))
 	for i, a := range mangaDB.Authors {
-		authors[i] = author{
+		authors[i] = mangaAuthor{
 			ID:   a.ID,
 			Name: a.Name,
 			Role: a.Role,
