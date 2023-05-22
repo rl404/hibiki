@@ -1,6 +1,49 @@
 basePath: /
 definitions:
-  service.Manga:
+  service.alternativeTitles:
+    properties:
+      english:
+        type: string
+      japanese:
+        type: string
+      synonyms:
+        items:
+          type: string
+        type: array
+    type: object
+  service.author:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+  service.date:
+    properties:
+      day:
+        type: integer
+      month:
+        type: integer
+      year:
+        type: integer
+    type: object
+  service.genre:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  service.magazine:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  service.manga:
     properties:
       alternative_titles:
         $ref: '#/definitions/service.alternativeTitles'
@@ -61,7 +104,7 @@ definitions:
       voter:
         type: integer
     type: object
-  service.Pagination:
+  service.pagination:
     properties:
       limit:
         type: integer
@@ -70,7 +113,18 @@ definitions:
       total:
         type: integer
     type: object
-  service.UserManga:
+  service.related:
+    properties:
+      id:
+        type: integer
+      picture:
+        type: string
+      relation:
+        type: string
+      title:
+        type: string
+    type: object
+  service.userManga:
     properties:
       chapter:
         type: integer
@@ -92,60 +146,6 @@ definitions:
         type: string
       volume:
         type: integer
-    type: object
-  service.alternativeTitles:
-    properties:
-      english:
-        type: string
-      japanese:
-        type: string
-      synonyms:
-        items:
-          type: string
-        type: array
-    type: object
-  service.author:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      role:
-        type: string
-    type: object
-  service.date:
-    properties:
-      day:
-        type: integer
-      month:
-        type: integer
-      year:
-        type: integer
-    type: object
-  service.genre:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  service.magazine:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  service.related:
-    properties:
-      id:
-        type: integer
-      picture:
-        type: string
-      relation:
-        type: string
-      title:
-        type: string
     type: object
   utils.Response:
     properties:
@@ -207,8 +207,10 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/service.Manga'
+                    $ref: '#/definitions/service.manga'
                   type: array
+                meta:
+                  $ref: '#/definitions/service.pagination'
               type: object
         "400":
           description: Bad Request
@@ -239,7 +241,7 @@ paths:
             - $ref: '#/definitions/utils.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/service.Manga'
+                  $ref: '#/definitions/service.manga'
               type: object
         "202":
           description: Accepted
@@ -289,10 +291,10 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/service.UserManga'
+                    $ref: '#/definitions/service.userManga'
                   type: array
                 meta:
-                  $ref: '#/definitions/service.Pagination'
+                  $ref: '#/definitions/service.pagination'
               type: object
         "202":
           description: Accepted

@@ -19,7 +19,7 @@ import (
 // @param sort query string false "sort" enums(title,-title) default(title)
 // @param page query integer false "page" default(1)
 // @param limit query integer false "limit" default(20)
-// @success 200 {object} utils.Response{data=[]service.Manga}
+// @success 200 {object} utils.Response{data=[]service.manga,meta=service.pagination}
 // @failure 400 {object} utils.Response
 // @failure 500 {object} utils.Response
 // @router /manga [get]
@@ -38,7 +38,7 @@ func (api *API) handleGetMangaByID(w http.ResponseWriter, r *http.Request) {
 // @tags Manga
 // @produce json
 // @param mangaID path integer true "manga id"
-// @success 200 {object} utils.Response{data=service.Manga}
+// @success 200 {object} utils.Response{data=service.manga}
 // @failure 202 {object} utils.Response
 // @failure 400 {object} utils.Response
 // @failure 404 {object} utils.Response

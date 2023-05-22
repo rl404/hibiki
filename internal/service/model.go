@@ -2,8 +2,7 @@ package service
 
 import "github.com/rl404/hibiki/internal/domain/manga/entity"
 
-// Pagination is pagination model.
-type Pagination struct {
+type pagination struct {
 	Page  int `json:"page"`
 	Limit int `json:"limit"`
 	Total int `json:"total"`
@@ -44,7 +43,7 @@ type magazine struct {
 	Name string `json:"name"`
 }
 
-func (c *service) mangaFromEntity(mangaDB *entity.Manga) Manga {
+func (c *service) mangaFromEntity(mangaDB *entity.Manga) manga {
 	genres := make([]genre, len(mangaDB.Genres))
 	for i, g := range mangaDB.Genres {
 		genres[i] = genre{
@@ -80,7 +79,7 @@ func (c *service) mangaFromEntity(mangaDB *entity.Manga) Manga {
 		}
 	}
 
-	return Manga{
+	return manga{
 		ID:    mangaDB.ID,
 		Title: mangaDB.Title,
 		AlternativeTitles: alternativeTitles{

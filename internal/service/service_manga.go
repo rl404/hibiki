@@ -11,8 +11,7 @@ import (
 	"github.com/rl404/hibiki/internal/utils"
 )
 
-// Manga is manga model.
-type Manga struct {
+type manga struct {
 	ID                int64             `json:"id"`
 	Title             string            `json:"title"`
 	AlternativeTitles alternativeTitles `json:"alternative_titles"`
@@ -40,7 +39,7 @@ type Manga struct {
 }
 
 // GetMangaByID to get manga by id.
-func (s *service) GetMangaByID(ctx context.Context, id int64) (*Manga, int, error) {
+func (s *service) GetMangaByID(ctx context.Context, id int64) (*manga, int, error) {
 	if code, err := s.validateID(ctx, id); err != nil {
 		return nil, code, errors.Wrap(ctx, err)
 	}
@@ -88,12 +87,12 @@ type GetMangaRequest struct {
 }
 
 // GetManga to get manga list.
-func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]Manga, *Pagination, int, error) {
+func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]manga, *pagination, int, error) {
 	if err := utils.Validate(&data); err != nil {
 		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
 	}
 
-	manga, total, code, err := s.manga.GetAll(ctx, entity.GetAllRequest{
+	mangas, total, code, err := s.manga.GetAll(ctx, entity.GetAllRequest{
 		Title: data.Title,
 		Sort:  data.Sort,
 		Page:  data.Page,
@@ -103,12 +102,12 @@ func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]Manga, 
 		return nil, nil, code, errors.Wrap(ctx, err)
 	}
 
-	res := make([]Manga, len(manga))
-	for i, m := range manga {
+	res := make([]manga, len(mangas))
+	for i, m := range mangas {
 		res[i] = s.mangaFromEntity(&m)
 	}
 
-	return res, &Pagination{
+	return res, &pagination{
 		Page:  data.Page,
 		Limit: data.Limit,
 		Total: total,

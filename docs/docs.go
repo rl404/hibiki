@@ -83,8 +83,11 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/service.Manga"
+                                                "$ref": "#/definitions/service.manga"
                                             }
+                                        },
+                                        "meta": {
+                                            "$ref": "#/definitions/service.pagination"
                                         }
                                     }
                                 }
@@ -136,7 +139,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/service.Manga"
+                                            "$ref": "#/definitions/service.manga"
                                         }
                                     }
                                 }
@@ -216,11 +219,11 @@ const docTemplate = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/service.UserManga"
+                                                "$ref": "#/definitions/service.userManga"
                                             }
                                         },
                                         "meta": {
-                                            "$ref": "#/definitions/service.Pagination"
+                                            "$ref": "#/definitions/service.pagination"
                                         }
                                     }
                                 }
@@ -256,7 +259,74 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "service.Manga": {
+        "service.alternativeTitles": {
+            "type": "object",
+            "properties": {
+                "english": {
+                    "type": "string"
+                },
+                "japanese": {
+                    "type": "string"
+                },
+                "synonyms": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "service.author": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.date": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "month": {
+                    "type": "integer"
+                },
+                "year": {
+                    "type": "integer"
+                }
+            }
+        },
+        "service.genre": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.magazine": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.manga": {
             "type": "object",
             "properties": {
                 "alternative_titles": {
@@ -348,7 +418,7 @@ const docTemplate = `{
                 }
             }
         },
-        "service.Pagination": {
+        "service.pagination": {
             "type": "object",
             "properties": {
                 "limit": {
@@ -362,7 +432,24 @@ const docTemplate = `{
                 }
             }
         },
-        "service.UserManga": {
+        "service.related": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "picture": {
+                    "type": "string"
+                },
+                "relation": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.userManga": {
             "type": "object",
             "properties": {
                 "chapter": {
@@ -394,90 +481,6 @@ const docTemplate = `{
                 },
                 "volume": {
                     "type": "integer"
-                }
-            }
-        },
-        "service.alternativeTitles": {
-            "type": "object",
-            "properties": {
-                "english": {
-                    "type": "string"
-                },
-                "japanese": {
-                    "type": "string"
-                },
-                "synonyms": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "service.author": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.date": {
-            "type": "object",
-            "properties": {
-                "day": {
-                    "type": "integer"
-                },
-                "month": {
-                    "type": "integer"
-                },
-                "year": {
-                    "type": "integer"
-                }
-            }
-        },
-        "service.genre": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.magazine": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "service.related": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "picture": {
-                    "type": "string"
-                },
-                "relation": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
                 }
             }
         },

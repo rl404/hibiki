@@ -16,7 +16,7 @@ import (
 // @param username path string true "username"
 // @param page query integer false "page" default(1)
 // @param limit query integer false "limit" default(20)
-// @success 200 {object} utils.Response{data=[]service.UserManga,meta=service.Pagination}
+// @success 200 {object} utils.Response{data=[]service.userManga,meta=service.pagination}
 // @failure 202 {object} utils.Response
 // @failure 400 {object} utils.Response
 // @failure 404 {object} utils.Response
