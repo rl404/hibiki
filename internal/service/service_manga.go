@@ -8,6 +8,7 @@ import (
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
 	publisherEntity "github.com/rl404/hibiki/internal/domain/publisher/entity"
 	"github.com/rl404/hibiki/internal/errors"
+	"github.com/rl404/hibiki/internal/utils"
 )
 
 // Manga is manga model.
@@ -75,4 +76,41 @@ func (s *service) validateID(ctx context.Context, id int64) (int, error) {
 	}
 
 	return http.StatusNotFound, errors.Wrap(ctx, errors.ErrMangaNotFound)
+}
+
+// GetMangaRequest is get manga request model.
+type GetMangaRequest struct {
+	Mode  entity.SearchMode `validate:"oneof=all simple" mod:"default=all,trim,lcase"`
+	Title string            `validate:"omitempty,gte=3" mod:"trim,lcase"`
+	Sort  string            `validate:"oneof=title -title" mod:"default=name,trim,lcase"`
+	Page  int               `validate:"required,gte=1" mod:"default=1"`
+	Limit int               `validate:"required,gte=-1" mod:"default=20"`
+}
+
+// GetManga to get manga list.
+func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]Manga, *Pagination, int, error) {
+	if err := utils.Validate(&data); err != nil {
+		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
+	}
+
+	manga, total, code, err := s.manga.GetAll(ctx, entity.GetAllRequest{
+		Title: data.Title,
+		Sort:  data.Sort,
+		Page:  data.Page,
+		Limit: data.Limit,
+	})
+	if err != nil {
+		return nil, nil, code, errors.Wrap(ctx, err)
+	}
+
+	res := make([]Manga, len(manga))
+	for i, m := range manga {
+		res[i] = s.mangaFromEntity(&m)
+	}
+
+	return res, &Pagination{
+		Page:  data.Page,
+		Limit: data.Limit,
+		Total: total,
+	}, http.StatusOK, nil
 }

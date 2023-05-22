@@ -36,6 +36,7 @@ func (api *API) Register(r chi.Router, nrApp *newrelic.Application) {
 		}))
 		r.Use(utils.Recoverer)
 
+		r.Get("/manga", api.handleGetManga)
 		r.Get("/manga/{mangaID}", api.handleGetMangaByID)
 
 		r.Get("/user/{username}/manga", api.handleGetUserManga)

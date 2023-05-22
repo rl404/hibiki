@@ -5,6 +5,7 @@ import (
 
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type manga struct {
@@ -231,4 +232,63 @@ func (m *Mongo) mangaFromEntity(ma entity.Manga) *manga {
 		Serialization: serialization,
 		UpdatedAt:     ma.UpdatedAt,
 	}
+}
+
+func (m *Mongo) convertSort(sort string) bson.D {
+	if sort == "" {
+		sort = "title"
+	}
+
+	if sort[0] == '-' {
+		return bson.D{{Key: sort[1:], Value: -1}}
+	}
+
+	return bson.D{{Key: sort, Value: 1}}
+}
+
+func (m *Mongo) getPipeline(stages ...bson.D) mongo.Pipeline {
+	var pipelines mongo.Pipeline
+	for _, stage := range stages {
+		if len(stage) > 0 {
+			pipelines = append(pipelines, stage)
+		}
+	}
+	return pipelines
+}
+
+func (m *Mongo) addStage(stageKey string, stages bson.D, key string, value interface{}) bson.D {
+	for i, stage := range stages {
+		if stage.Key != stageKey {
+			continue
+		}
+
+		matchValue, ok := stage.Value.(bson.M)
+		if !ok {
+			continue
+		}
+
+		if matchValue[key] == nil {
+			matchValue[key] = bson.M{}
+		}
+
+		if mValue, ok := value.(bson.M); ok {
+			for k, v := range mValue {
+				matchValue[key].(bson.M)[k] = v
+			}
+		} else {
+			matchValue[key] = value
+		}
+
+		stages[i].Value = matchValue
+		return stages
+	}
+
+	return append(stages, bson.E{
+		Key:   stageKey,
+		Value: bson.M{key: value},
+	})
+}
+
+func (m *Mongo) addMatch(matchStage bson.D, key string, value interface{}) bson.D {
+	return m.addStage("$match", matchStage, key, value)
 }

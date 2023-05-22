@@ -70,3 +70,12 @@ type Magazine struct {
 	ID   int64
 	Name string
 }
+
+// GetAllRequest is get all request model.
+type GetAllRequest struct {
+	Mode  SearchMode
+	Title string
+	Sort  string
+	Page  int
+	Limit int
+}
