@@ -1,12 +1,55 @@
 basePath: /
 definitions:
-  service.Manga:
+  service.alternativeTitles:
+    properties:
+      english:
+        type: string
+      japanese:
+        type: string
+      synonyms:
+        items:
+          type: string
+        type: array
+    type: object
+  service.author:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+    type: object
+  service.date:
+    properties:
+      day:
+        type: integer
+      month:
+        type: integer
+      year:
+        type: integer
+    type: object
+  service.genre:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  service.magazine:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  service.manga:
     properties:
       alternative_titles:
         $ref: '#/definitions/service.alternativeTitles'
       authors:
         items:
-          $ref: '#/definitions/service.author'
+          $ref: '#/definitions/service.mangaAuthor'
         type: array
       background:
         type: string
@@ -14,6 +57,8 @@ definitions:
         type: integer
       end_date:
         $ref: '#/definitions/service.date'
+      favorite:
+        type: integer
       genres:
         items:
           $ref: '#/definitions/service.genre'
@@ -61,7 +106,16 @@ definitions:
       voter:
         type: integer
     type: object
-  service.Pagination:
+  service.mangaAuthor:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+  service.pagination:
     properties:
       limit:
         type: integer
@@ -70,7 +124,18 @@ definitions:
       total:
         type: integer
     type: object
-  service.UserManga:
+  service.related:
+    properties:
+      id:
+        type: integer
+      picture:
+        type: string
+      relation:
+        type: string
+      title:
+        type: string
+    type: object
+  service.userManga:
     properties:
       chapter:
         type: integer
@@ -93,60 +158,6 @@ definitions:
       volume:
         type: integer
     type: object
-  service.alternativeTitles:
-    properties:
-      english:
-        type: string
-      japanese:
-        type: string
-      synonyms:
-        items:
-          type: string
-        type: array
-    type: object
-  service.author:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      role:
-        type: string
-    type: object
-  service.date:
-    properties:
-      day:
-        type: integer
-      month:
-        type: integer
-      year:
-        type: integer
-    type: object
-  service.genre:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  service.magazine:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  service.related:
-    properties:
-      id:
-        type: integer
-      picture:
-        type: string
-      relation:
-        type: string
-      title:
-        type: string
-    type: object
   utils.Response:
     properties:
       data:
@@ -163,6 +174,231 @@ info:
   description: Hibiki API.
   title: Hibiki API
 paths:
+  /authors:
+    get:
+      parameters:
+      - description: name
+        in: query
+        name: name
+        type: string
+      - default: 1
+        description: page
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/service.author'
+                  type: array
+                meta:
+                  $ref: '#/definitions/service.pagination'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get author list.
+      tags:
+      - Author
+  /genres:
+    get:
+      parameters:
+      - description: name
+        in: query
+        name: name
+        type: string
+      - default: 1
+        description: page
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/service.genre'
+                  type: array
+                meta:
+                  $ref: '#/definitions/service.pagination'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get genre list.
+      tags:
+      - Genre
+  /magazines:
+    get:
+      parameters:
+      - description: name
+        in: query
+        name: name
+        type: string
+      - default: 1
+        description: page
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/service.magazine'
+                  type: array
+                meta:
+                  $ref: '#/definitions/service.pagination'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get magazine list.
+      tags:
+      - Magazine
+  /manga:
+    get:
+      parameters:
+      - default: SIMPLE
+        description: mode
+        enum:
+        - ALL
+        - SIMPLE
+        in: query
+        name: mode
+        type: string
+      - description: title
+        in: query
+        name: title
+        type: string
+      - description: type
+        enum:
+        - MANGA
+        - NOVEL
+        - ONE_SHOT
+        - DOUJINSHI
+        - MANHWA
+        - MANHUA
+        - OEL
+        - LIGHT_NOVEL
+        in: query
+        name: type
+        type: string
+      - description: start date (yyyy-mm-dd)
+        in: query
+        name: start_date
+        type: string
+      - description: end date (yyyy-mm-dd)
+        in: query
+        name: end_date
+        type: string
+      - default: popularity
+        description: sort
+        enum:
+        - title
+        - -title
+        - mean
+        - -mean
+        - rank
+        - -rank
+        - popularity
+        - -popularity
+        - member
+        - -member
+        - favorite
+        - -favorite
+        - start_date
+        - -start_date
+        in: query
+        name: sort
+        type: string
+      - default: 1
+        description: page
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/service.manga'
+                  type: array
+                meta:
+                  $ref: '#/definitions/service.pagination'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get manga list.
+      tags:
+      - Manga
   /manga/{mangaID}:
     get:
       parameters:
@@ -181,7 +417,7 @@ paths:
             - $ref: '#/definitions/utils.Response'
             - properties:
                 data:
-                  $ref: '#/definitions/service.Manga'
+                  $ref: '#/definitions/service.manga'
               type: object
         "202":
           description: Accepted
@@ -231,10 +467,10 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/service.UserManga'
+                    $ref: '#/definitions/service.userManga'
                   type: array
                 meta:
-                  $ref: '#/definitions/service.Pagination'
+                  $ref: '#/definitions/service.pagination'
               type: object
         "202":
           description: Accepted

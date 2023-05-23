@@ -99,6 +99,7 @@ func (s *service) updateManga(ctx context.Context, id int64) (int, error) {
 		Popularity: mangaE.Popularity,
 		Member:     mangaE.Member,
 		Voter:      mangaE.Voter,
+		Favorite:   mangaE.Favorite,
 	}); err != nil {
 		return code, errors.Wrap(ctx, err)
 	}

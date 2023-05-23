@@ -22,6 +22,7 @@ type Manga struct {
 	Popularity        int
 	Member            int
 	Voter             int
+	Favorite          int
 	Genres            []Genre
 	Pictures          []string
 	Related           []Related
@@ -69,4 +70,16 @@ type Author struct {
 type Magazine struct {
 	ID   int64
 	Name string
+}
+
+// GetAllRequest is get all request model.
+type GetAllRequest struct {
+	Mode      SearchMode
+	Title     string
+	Type      Type
+	StartDate *time.Time
+	EndDate   *time.Time
+	Sort      string
+	Page      int
+	Limit     int
 }

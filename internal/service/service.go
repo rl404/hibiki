@@ -17,9 +17,14 @@ import (
 
 // Service contains functions for service.
 type Service interface {
-	GetMangaByID(ctx context.Context, id int64) (*Manga, int, error)
+	GetManga(ctx context.Context, data GetMangaRequest) ([]manga, *pagination, int, error)
+	GetMangaByID(ctx context.Context, id int64) (*manga, int, error)
 
-	GetUserManga(ctx context.Context, data GetUserMangaRequest) ([]UserManga, *Pagination, int, error)
+	GetAuthors(ctx context.Context, data GetAuthorsRequest) ([]author, *pagination, int, error)
+	GetGenres(ctx context.Context, data GetGenresRequest) ([]genre, *pagination, int, error)
+	GetMagazines(ctx context.Context, data GetMagazinesRequest) ([]magazine, *pagination, int, error)
+
+	GetUserManga(ctx context.Context, data GetUserMangaRequest) ([]userManga, *pagination, int, error)
 
 	ConsumeMessage(ctx context.Context, msg entity.Message) error
 

@@ -45,3 +45,12 @@ const (
 	RelationCharacter          = "CHARACTER"
 	RelationOther              = "OTHER"
 )
+
+// SearchMode is search mode.
+type SearchMode string
+
+// Available search mode.
+const (
+	SearchModeAll    SearchMode = "ALL"
+	SearchModeSimple SearchMode = "SIMPLE"
+)

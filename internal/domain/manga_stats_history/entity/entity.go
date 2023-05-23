@@ -8,4 +8,5 @@ type MangaStatsHistory struct {
 	Popularity int
 	Member     int
 	Voter      int
+	Favorite   int
 }

@@ -91,6 +91,7 @@ func MangaFromNagato(ctx context.Context, manga *nagato.Manga) (*Manga, error) {
 		Popularity:    manga.Popularity,
 		Member:        manga.NumListUsers,
 		Voter:         manga.NumScoringUsers,
+		Favorite:      manga.NumFavorites,
 		Genres:        genres,
 		Pictures:      pictures,
 		Related:       related,

@@ -6,3 +6,10 @@ type Author struct {
 	FirstName string
 	LastName  string
 }
+
+// GetAllRequest is get all request model.
+type GetAllRequest struct {
+	Name  string
+	Page  int
+	Limit int
+}

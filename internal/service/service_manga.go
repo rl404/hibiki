@@ -8,10 +8,10 @@ import (
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
 	publisherEntity "github.com/rl404/hibiki/internal/domain/publisher/entity"
 	"github.com/rl404/hibiki/internal/errors"
+	"github.com/rl404/hibiki/internal/utils"
 )
 
-// Manga is manga model.
-type Manga struct {
+type manga struct {
 	ID                int64             `json:"id"`
 	Title             string            `json:"title"`
 	AlternativeTitles alternativeTitles `json:"alternative_titles"`
@@ -30,16 +30,17 @@ type Manga struct {
 	Popularity        int               `json:"popularity"`
 	Member            int               `json:"member"`
 	Voter             int               `json:"voter"`
+	Favorite          int               `json:"favorite"`
 	Genres            []genre           `json:"genres"`
 	Pictures          []string          `json:"pictures"`
 	Related           []related         `json:"related"`
-	Authors           []author          `json:"authors"`
+	Authors           []mangaAuthor     `json:"authors"`
 	Serialization     []magazine        `json:"serialization"`
 	UpdatedAt         time.Time         `json:"updated_at"`
 }
 
 // GetMangaByID to get manga by id.
-func (s *service) GetMangaByID(ctx context.Context, id int64) (*Manga, int, error) {
+func (s *service) GetMangaByID(ctx context.Context, id int64) (*manga, int, error) {
 	if code, err := s.validateID(ctx, id); err != nil {
 		return nil, code, errors.Wrap(ctx, err)
 	}
@@ -75,4 +76,48 @@ func (s *service) validateID(ctx context.Context, id int64) (int, error) {
 	}
 
 	return http.StatusNotFound, errors.Wrap(ctx, errors.ErrMangaNotFound)
+}
+
+// GetMangaRequest is get manga request model.
+type GetMangaRequest struct {
+	Mode      entity.SearchMode `validate:"oneof=ALL SIMPLE" mod:"default=SIMPLE,trim,ucase"`
+	Title     string            `validate:"omitempty,gte=3" mod:"trim,lcase"`
+	Type      entity.Type       `validate:"omitempty,oneof=MANGA NOVEL ONE_SHOT DOUJINSHI MANHWA MANHUA OEL LIGHT_NOVEL" mod:"trim,ucase"`
+	StartDate string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
+	EndDate   string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
+	Sort      string            `validate:"omitempty,oneof=title -title mean -mean rank -rank popularity -popularity member -member favorite -favorite start_date -start_date" mod:"default=popularity,trim,lcase"`
+	Page      int               `validate:"required,gte=1" mod:"default=1"`
+	Limit     int               `validate:"required,gte=-1" mod:"default=20"`
+}
+
+// GetManga to get manga list.
+func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]manga, *pagination, int, error) {
+	if err := utils.Validate(&data); err != nil {
+		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
+	}
+
+	mangas, total, code, err := s.manga.GetAll(ctx, entity.GetAllRequest{
+		Mode:      data.Mode,
+		Title:     data.Title,
+		Type:      data.Type,
+		StartDate: utils.ParseToTimePtr("2006-01-02", data.StartDate),
+		EndDate:   utils.ParseToTimePtr("2006-01-02", data.EndDate),
+		Sort:      data.Sort,
+		Page:      data.Page,
+		Limit:     data.Limit,
+	})
+	if err != nil {
+		return nil, nil, code, errors.Wrap(ctx, err)
+	}
+
+	res := make([]manga, len(mangas))
+	for i, m := range mangas {
+		res[i] = s.mangaFromEntity(&m)
+	}
+
+	return res, &pagination{
+		Page:  data.Page,
+		Limit: data.Limit,
+		Total: total,
+	}, http.StatusOK, nil
 }

@@ -165,3 +165,88 @@ func (m *Mongo) GetOldReleasingIDs(ctx context.Context) ([]int64, int, error) {
 func (m *Mongo) GetOldNotYetIDs(ctx context.Context) ([]int64, int, error) {
 	return m.getOldIDs(ctx, []entity.Status{entity.StatusFinished}, m.notYetAge)
 }
+
+// GetAll to get all data.
+func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity.Manga, int, int, error) {
+	newFieldStage := bson.D{{Key: "$addFields", Value: bson.M{
+		"start_date_2": bson.M{"$dateFromParts": bson.M{
+			"year":  bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$start_date.year", 0}}, 1, "$start_date.year"}},
+			"month": bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$start_date.month", 0}}, 1, "$start_date.month"}},
+			"day":   bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$start_date.day", 0}}, 1, "$start_date.day"}},
+		}},
+		"end_date_2": bson.M{"$dateFromParts": bson.M{
+			"year":  bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.year", 0}}, 1, "$end_date.year"}},
+			"month": bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.month", 0}}, 1, "$end_date.month"}},
+			"day":   bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.day", 0}}, 1, "$end_date.day"}},
+		}}}}}
+	matchStage := bson.D{}
+	projectStage := bson.D{}
+	sortStage := bson.D{{Key: "$sort", Value: m.convertSort(data.Sort)}}
+	skipStage := bson.D{{Key: "$skip", Value: (data.Page - 1) * data.Limit}}
+	limitStage := bson.D{}
+	countStage := bson.D{{Key: "$count", Value: "count"}}
+
+	if data.Mode == entity.SearchModeSimple {
+		projectStage = bson.D{{Key: "$project", Value: bson.M{
+			"id":      1,
+			"title":   1,
+			"picture": 1,
+		}}}
+	}
+
+	if data.Title != "" {
+		matchStage = m.addMatch(matchStage, "$or", []bson.M{
+			{"title": bson.M{"$regex": data.Title, "$options": "i"}},
+			{"alternative_titles.synonyms": bson.M{"$regex": data.Title, "$options": "i"}},
+			{"alternative_titles.english": bson.M{"$regex": data.Title, "$options": "i"}},
+			{"alternative_titles.japanese": bson.M{"$regex": data.Title, "$options": "i"}},
+		})
+	}
+
+	if data.Type != "" {
+		matchStage = m.addMatch(matchStage, "type", data.Type)
+	}
+
+	if data.StartDate != nil {
+		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$gte": data.StartDate})
+	}
+
+	if data.EndDate != nil {
+		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$lte": data.EndDate})
+	}
+
+	if data.Limit > 0 {
+		limitStage = append(limitStage, bson.E{Key: "$limit", Value: data.Limit})
+	}
+
+	cursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, sortStage, projectStage, skipStage, limitStage))
+	if err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	var mangas []manga
+	if err := cursor.All(ctx, &mangas); err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	res := make([]entity.Manga, len(mangas))
+	for i, manga := range mangas {
+		res[i] = *manga.toEntity()
+	}
+
+	cntCursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, countStage))
+	if err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	var total []map[string]int64
+	if err := cntCursor.All(ctx, &total); err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	if len(total) == 0 {
+		return res, 0, http.StatusOK, nil
+	}
+
+	return res, int(total[0]["count"]), http.StatusOK, nil
+}

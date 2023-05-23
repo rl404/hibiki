@@ -1,10 +1,12 @@
 package mongo
 
 import (
+	"strings"
 	"time"
 
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type manga struct {
@@ -26,6 +28,7 @@ type manga struct {
 	Popularity        int              `bson:"popularity"`
 	Member            int              `bson:"member"`
 	Voter             int              `bson:"voter"`
+	Favorite          int              `bson:"favorite"`
 	Genres            []genre          `bson:"genres"`
 	Pictures          []string         `bson:"pictures"`
 	Related           []related        `bson:"related"`
@@ -148,6 +151,7 @@ func (m *manga) toEntity() *entity.Manga {
 		Popularity:    m.Popularity,
 		Member:        m.Member,
 		Voter:         m.Voter,
+		Favorite:      m.Favorite,
 		Genres:        genres,
 		Pictures:      m.Pictures,
 		Related:       related,
@@ -224,6 +228,7 @@ func (m *Mongo) mangaFromEntity(ma entity.Manga) *manga {
 		Popularity:    ma.Popularity,
 		Member:        ma.Member,
 		Voter:         ma.Voter,
+		Favorite:      ma.Favorite,
 		Genres:        genres,
 		Pictures:      ma.Pictures,
 		Related:       relateds,
@@ -231,4 +236,67 @@ func (m *Mongo) mangaFromEntity(ma entity.Manga) *manga {
 		Serialization: serialization,
 		UpdatedAt:     ma.UpdatedAt,
 	}
+}
+
+func (m *Mongo) convertSort(sort string) bson.D {
+	if sort == "" {
+		sort = "title"
+	}
+
+	if strings.Contains(sort, "start_date") || strings.Contains(sort, "end_date") {
+		sort += "_2"
+	}
+
+	if sort[0] == '-' {
+		return bson.D{{Key: sort[1:], Value: -1}}
+	}
+
+	return bson.D{{Key: sort, Value: 1}}
+}
+
+func (m *Mongo) getPipeline(stages ...bson.D) mongo.Pipeline {
+	var pipelines mongo.Pipeline
+	for _, stage := range stages {
+		if len(stage) > 0 {
+			pipelines = append(pipelines, stage)
+		}
+	}
+	return pipelines
+}
+
+func (m *Mongo) addStage(stageKey string, stages bson.D, key string, value interface{}) bson.D {
+	for i, stage := range stages {
+		if stage.Key != stageKey {
+			continue
+		}
+
+		matchValue, ok := stage.Value.(bson.M)
+		if !ok {
+			continue
+		}
+
+		if matchValue[key] == nil {
+			matchValue[key] = bson.M{}
+		}
+
+		if mValue, ok := value.(bson.M); ok {
+			for k, v := range mValue {
+				matchValue[key].(bson.M)[k] = v
+			}
+		} else {
+			matchValue[key] = value
+		}
+
+		stages[i].Value = matchValue
+		return stages
+	}
+
+	return append(stages, bson.E{
+		Key:   stageKey,
+		Value: bson.M{key: value},
+	})
+}
+
+func (m *Mongo) addMatch(matchStage bson.D, key string, value interface{}) bson.D {
+	return m.addStage("$match", matchStage, key, value)
 }
