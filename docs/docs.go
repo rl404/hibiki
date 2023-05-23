@@ -241,11 +241,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "enum": [
-                            "all",
-                            "simple"
+                            "ALL",
+                            "SIMPLE"
                         ],
                         "type": "string",
-                        "default": "all",
+                        "default": "SIMPLE",
                         "description": "mode",
                         "name": "mode",
                         "in": "query"
@@ -258,8 +258,46 @@ const docTemplate = `{
                     },
                     {
                         "enum": [
+                            "MANGA",
+                            "NOVEL",
+                            "ONE_SHOT",
+                            "DOUJINSHI",
+                            "MANHWA",
+                            "MANHUA",
+                            "OEL",
+                            "LIGHT_NOVEL"
+                        ],
+                        "type": "string",
+                        "description": "type",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "start date (yyyy-mm-dd)",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "end date (yyyy-mm-dd)",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
                             "title",
-                            "-title"
+                            "-title",
+                            "mean",
+                            "-mean",
+                            "rank",
+                            "-rank",
+                            "popularity",
+                            "-popularity",
+                            "member",
+                            "-member",
+                            "start_date",
+                            "-start_date"
                         ],
                         "type": "string",
                         "default": "title",

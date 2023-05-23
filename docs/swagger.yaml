@@ -307,11 +307,11 @@ paths:
   /manga:
     get:
       parameters:
-      - default: all
+      - default: SIMPLE
         description: mode
         enum:
-        - all
-        - simple
+        - ALL
+        - SIMPLE
         in: query
         name: mode
         type: string
@@ -319,11 +319,42 @@ paths:
         in: query
         name: title
         type: string
+      - description: type
+        enum:
+        - MANGA
+        - NOVEL
+        - ONE_SHOT
+        - DOUJINSHI
+        - MANHWA
+        - MANHUA
+        - OEL
+        - LIGHT_NOVEL
+        in: query
+        name: type
+        type: string
+      - description: start date (yyyy-mm-dd)
+        in: query
+        name: start_date
+        type: string
+      - description: end date (yyyy-mm-dd)
+        in: query
+        name: end_date
+        type: string
       - default: title
         description: sort
         enum:
         - title
         - -title
+        - mean
+        - -mean
+        - rank
+        - -rank
+        - popularity
+        - -popularity
+        - member
+        - -member
+        - start_date
+        - -start_date
         in: query
         name: sort
         type: string

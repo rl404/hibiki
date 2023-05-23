@@ -168,7 +168,17 @@ func (m *Mongo) GetOldNotYetIDs(ctx context.Context) ([]int64, int, error) {
 
 // GetAll to get all data.
 func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity.Manga, int, int, error) {
-	newFieldStage := bson.D{}
+	newFieldStage := bson.D{{Key: "$addFields", Value: bson.M{
+		"start_date_2": bson.M{"$dateFromParts": bson.M{
+			"year":  bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$start_date.year", 0}}, 1, "$start_date.year"}},
+			"month": bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$start_date.month", 0}}, 1, "$start_date.month"}},
+			"day":   bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$start_date.day", 0}}, 1, "$start_date.day"}},
+		}},
+		"end_date_2": bson.M{"$dateFromParts": bson.M{
+			"year":  bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.year", 0}}, 1, "$end_date.year"}},
+			"month": bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.month", 0}}, 1, "$end_date.month"}},
+			"day":   bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.day", 0}}, 1, "$end_date.day"}},
+		}}}}}
 	matchStage := bson.D{}
 	projectStage := bson.D{}
 	sortStage := bson.D{{Key: "$sort", Value: m.convertSort(data.Sort)}}
@@ -193,11 +203,23 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 		})
 	}
 
+	if data.Type != "" {
+		matchStage = m.addMatch(matchStage, "type", data.Type)
+	}
+
+	if data.StartDate != nil {
+		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$gte": data.StartDate})
+	}
+
+	if data.EndDate != nil {
+		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$lte": data.EndDate})
+	}
+
 	if data.Limit > 0 {
 		limitStage = append(limitStage, bson.E{Key: "$limit", Value: data.Limit})
 	}
 
-	cursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, projectStage, sortStage, skipStage, limitStage))
+	cursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, sortStage, projectStage, skipStage, limitStage))
 	if err != nil {
 		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
 	}

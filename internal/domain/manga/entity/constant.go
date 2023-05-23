@@ -51,6 +51,6 @@ type SearchMode string
 
 // Available search mode.
 const (
-	SearchModeAll    SearchMode = "all"
-	SearchModeSimple SearchMode = "simple"
+	SearchModeAll    SearchMode = "ALL"
+	SearchModeSimple SearchMode = "SIMPLE"
 )

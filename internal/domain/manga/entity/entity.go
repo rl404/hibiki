@@ -73,9 +73,12 @@ type Magazine struct {
 
 // GetAllRequest is get all request model.
 type GetAllRequest struct {
-	Mode  SearchMode
-	Title string
-	Sort  string
-	Page  int
-	Limit int
+	Mode      SearchMode
+	Title     string
+	Type      Type
+	StartDate *time.Time
+	EndDate   *time.Time
+	Sort      string
+	Page      int
+	Limit     int
 }

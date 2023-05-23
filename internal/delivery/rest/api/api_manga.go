@@ -14,9 +14,12 @@ import (
 // @summary Get manga list.
 // @tags Manga
 // @produce json
-// @param mode query string false "mode" enums(all, simple) default(all)
+// @param mode query string false "mode" enums(ALL,SIMPLE) default(SIMPLE)
 // @param title query string false "title"
-// @param sort query string false "sort" enums(title,-title) default(title)
+// @param type query string false "type" enums(MANGA,NOVEL,ONE_SHOT,DOUJINSHI,MANHWA,MANHUA,OEL,LIGHT_NOVEL)
+// @param start_date query string false "start date (yyyy-mm-dd)"
+// @param end_date query string false "end date (yyyy-mm-dd)"
+// @param sort query string false "sort" enums(title,-title,mean,-mean,rank,-rank,popularity,-popularity,member,-member,start_date,-start_date) default(title)
 // @param page query integer false "page" default(1)
 // @param limit query integer false "limit" default(20)
 // @success 200 {object} utils.Response{data=[]service.manga,meta=service.pagination}
@@ -26,16 +29,22 @@ import (
 func (api *API) handleGetManga(w http.ResponseWriter, r *http.Request) {
 	mode := r.URL.Query().Get("mode")
 	title := r.URL.Query().Get("title")
+	_type := r.URL.Query().Get("type")
+	startDate := r.URL.Query().Get("start_date")
+	endDate := r.URL.Query().Get("end_date")
 	sort := r.URL.Query().Get("sort")
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 
 	manga, pagination, code, err := api.service.GetManga(r.Context(), service.GetMangaRequest{
-		Mode:  entity.SearchMode(mode),
-		Title: title,
-		Sort:  sort,
-		Page:  page,
-		Limit: limit,
+		Mode:      entity.SearchMode(mode),
+		Type:      entity.Type(_type),
+		Title:     title,
+		StartDate: startDate,
+		EndDate:   endDate,
+		Sort:      sort,
+		Page:      page,
+		Limit:     limit,
 	})
 
 	utils.ResponseWithJSON(w, code, manga, errors.Wrap(r.Context(), err), pagination)

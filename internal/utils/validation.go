@@ -13,13 +13,14 @@ var val validation.Validator
 
 func init() {
 	val = validation.New(true)
-	_ = val.RegisterModifier("no_space", modNoSpace)
-	_ = val.RegisterValidatorError("required", valErrRequired)
-	_ = val.RegisterValidatorError("gte", valErrGTE)
-	_ = val.RegisterValidatorError("gt", valErrGT)
-	_ = val.RegisterValidatorError("lte", valErrLTE)
-	_ = val.RegisterValidatorError("lt", valErrLT)
-	_ = val.RegisterValidatorError("oneof", valErrOneOf)
+	val.RegisterModifier("no_space", modNoSpace)
+	val.RegisterValidatorError("required", valErrRequired)
+	val.RegisterValidatorError("gte", valErrGTE)
+	val.RegisterValidatorError("gt", valErrGT)
+	val.RegisterValidatorError("lte", valErrLTE)
+	val.RegisterValidatorError("lt", valErrLT)
+	val.RegisterValidatorError("oneof", valErrOneOf)
+	val.RegisterValidatorError("datetime", valErrDatetime)
 }
 
 // Validate to validate struct using validate tag.
@@ -54,6 +55,10 @@ func valErrLT(f string, param ...string) error {
 
 func valErrOneOf(f string, param ...string) error {
 	return errors.ErrOneOfField(camelToSnake(f), param[0])
+}
+
+func valErrDatetime(f string, param ...string) error {
+	return errors.ErrDatetimeField(camelToSnake(f), param[0])
 }
 
 func camelToSnake(name string) string {

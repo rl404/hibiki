@@ -1,6 +1,7 @@
 package mongo
 
 import (
+	"strings"
 	"time"
 
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
@@ -237,6 +238,10 @@ func (m *Mongo) mangaFromEntity(ma entity.Manga) *manga {
 func (m *Mongo) convertSort(sort string) bson.D {
 	if sort == "" {
 		sort = "title"
+	}
+
+	if strings.Contains(sort, "start_date") || strings.Contains(sort, "end_date") {
+		sort += "_2"
 	}
 
 	if sort[0] == '-' {
