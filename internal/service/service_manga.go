@@ -30,6 +30,7 @@ type manga struct {
 	Popularity        int               `json:"popularity"`
 	Member            int               `json:"member"`
 	Voter             int               `json:"voter"`
+	Favorite          int               `json:"favorite"`
 	Genres            []genre           `json:"genres"`
 	Pictures          []string          `json:"pictures"`
 	Related           []related         `json:"related"`
@@ -84,7 +85,7 @@ type GetMangaRequest struct {
 	Type      entity.Type       `validate:"omitempty,oneof=MANGA NOVEL ONE_SHOT DOUJINSHI MANHWA MANHUA OEL LIGHT_NOVEL" mod:"trim,ucase"`
 	StartDate string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
 	EndDate   string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
-	Sort      string            `validate:"omitempty,oneof=title -title mean -mean rank -rank popularity -popularity member -member start_date -start_date" mod:"default=title,trim,lcase"`
+	Sort      string            `validate:"omitempty,oneof=title -title mean -mean rank -rank popularity -popularity member -member favorite -favorite start_date -start_date" mod:"default=popularity,trim,lcase"`
 	Page      int               `validate:"required,gte=1" mod:"default=1"`
 	Limit     int               `validate:"required,gte=-1" mod:"default=20"`
 }

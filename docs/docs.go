@@ -296,11 +296,13 @@ const docTemplate = `{
                             "-popularity",
                             "member",
                             "-member",
+                            "favorite",
+                            "-favorite",
                             "start_date",
                             "-start_date"
                         ],
                         "type": "string",
-                        "default": "title",
+                        "default": "popularity",
                         "description": "sort",
                         "name": "sort",
                         "in": "query"
@@ -597,6 +599,9 @@ const docTemplate = `{
                 },
                 "end_date": {
                     "$ref": "#/definitions/service.date"
+                },
+                "favorite": {
+                    "type": "integer"
                 },
                 "genres": {
                     "type": "array",

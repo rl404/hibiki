@@ -14,6 +14,7 @@ type mangaStatsHistory struct {
 	Popularity int       `bson:"popularity"`
 	Member     int       `bson:"member"`
 	Voter      int       `bson:"voter"`
+	Favorite   int       `bson:"favorite"`
 	CreatedAt  time.Time `bson:"created_at"`
 }
 
@@ -34,5 +35,6 @@ func (m *Mongo) fromEntity(data entity.MangaStatsHistory) *mangaStatsHistory {
 		Popularity: data.Popularity,
 		Member:     data.Member,
 		Voter:      data.Voter,
+		Favorite:   data.Favorite,
 	}
 }

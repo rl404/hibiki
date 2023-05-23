@@ -19,7 +19,7 @@ import (
 // @param type query string false "type" enums(MANGA,NOVEL,ONE_SHOT,DOUJINSHI,MANHWA,MANHUA,OEL,LIGHT_NOVEL)
 // @param start_date query string false "start date (yyyy-mm-dd)"
 // @param end_date query string false "end date (yyyy-mm-dd)"
-// @param sort query string false "sort" enums(title,-title,mean,-mean,rank,-rank,popularity,-popularity,member,-member,start_date,-start_date) default(title)
+// @param sort query string false "sort" enums(title,-title,mean,-mean,rank,-rank,popularity,-popularity,member,-member,favorite,-favorite,start_date,-start_date) default(popularity)
 // @param page query integer false "page" default(1)
 // @param limit query integer false "limit" default(20)
 // @success 200 {object} utils.Response{data=[]service.manga,meta=service.pagination}

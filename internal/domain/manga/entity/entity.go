@@ -22,6 +22,7 @@ type Manga struct {
 	Popularity        int
 	Member            int
 	Voter             int
+	Favorite          int
 	Genres            []Genre
 	Pictures          []string
 	Related           []Related

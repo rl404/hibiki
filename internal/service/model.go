@@ -110,6 +110,7 @@ func (c *service) mangaFromEntity(mangaDB *entity.Manga) manga {
 		Popularity:    mangaDB.Popularity,
 		Member:        mangaDB.Member,
 		Voter:         mangaDB.Voter,
+		Favorite:      mangaDB.Favorite,
 		Genres:        genres,
 		Pictures:      mangaDB.Pictures,
 		Related:       relateds,

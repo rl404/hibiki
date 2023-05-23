@@ -28,6 +28,7 @@ type manga struct {
 	Popularity        int              `bson:"popularity"`
 	Member            int              `bson:"member"`
 	Voter             int              `bson:"voter"`
+	Favorite          int              `bson:"favorite"`
 	Genres            []genre          `bson:"genres"`
 	Pictures          []string         `bson:"pictures"`
 	Related           []related        `bson:"related"`
@@ -150,6 +151,7 @@ func (m *manga) toEntity() *entity.Manga {
 		Popularity:    m.Popularity,
 		Member:        m.Member,
 		Voter:         m.Voter,
+		Favorite:      m.Favorite,
 		Genres:        genres,
 		Pictures:      m.Pictures,
 		Related:       related,
@@ -226,6 +228,7 @@ func (m *Mongo) mangaFromEntity(ma entity.Manga) *manga {
 		Popularity:    ma.Popularity,
 		Member:        ma.Member,
 		Voter:         ma.Voter,
+		Favorite:      ma.Favorite,
 		Genres:        genres,
 		Pictures:      ma.Pictures,
 		Related:       relateds,
