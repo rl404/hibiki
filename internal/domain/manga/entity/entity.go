@@ -79,6 +79,7 @@ type GetAllRequest struct {
 	Type      Type
 	StartDate *time.Time
 	EndDate   *time.Time
+	NSFW      *bool
 	Sort      string
 	Page      int
 	Limit     int

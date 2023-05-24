@@ -215,6 +215,10 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$lte": data.EndDate})
 	}
 
+	if data.NSFW != nil {
+		matchStage = m.addMatch(matchStage, "nsfw", data.NSFW)
+	}
+
 	if data.Limit > 0 {
 		limitStage = append(limitStage, bson.E{Key: "$limit", Value: data.Limit})
 	}

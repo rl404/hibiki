@@ -286,6 +286,16 @@ const docTemplate = `{
                     },
                     {
                         "enum": [
+                            "true",
+                            "false"
+                        ],
+                        "type": "string",
+                        "description": "nsfw",
+                        "name": "nsfw",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
                             "title",
                             "-title",
                             "mean",
