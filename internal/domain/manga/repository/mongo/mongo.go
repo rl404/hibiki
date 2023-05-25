@@ -191,6 +191,8 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 			"id":      1,
 			"title":   1,
 			"picture": 1,
+			"nsfw":    1,
+			"mean":    1,
 		}}}
 	}
 
