@@ -191,6 +191,8 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 			"id":      1,
 			"title":   1,
 			"picture": 1,
+			"nsfw":    1,
+			"mean":    1,
 		}}}
 	}
 
@@ -213,6 +215,10 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	if data.EndDate != nil {
 		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$lte": data.EndDate})
+	}
+
+	if data.NSFW != nil {
+		matchStage = m.addMatch(matchStage, "nsfw", data.NSFW)
 	}
 
 	if data.Limit > 0 {

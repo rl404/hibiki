@@ -19,6 +19,7 @@ import (
 // @param type query string false "type" enums(MANGA,NOVEL,ONE_SHOT,DOUJINSHI,MANHWA,MANHUA,OEL,LIGHT_NOVEL)
 // @param start_date query string false "start date (yyyy-mm-dd)"
 // @param end_date query string false "end date (yyyy-mm-dd)"
+// @param nsfw query string false "nsfw" enums(true,false)
 // @param sort query string false "sort" enums(title,-title,mean,-mean,rank,-rank,popularity,-popularity,member,-member,favorite,-favorite,start_date,-start_date) default(popularity)
 // @param page query integer false "page" default(1)
 // @param limit query integer false "limit" default(20)
@@ -33,6 +34,7 @@ func (api *API) handleGetManga(w http.ResponseWriter, r *http.Request) {
 	startDate := r.URL.Query().Get("start_date")
 	endDate := r.URL.Query().Get("end_date")
 	sort := r.URL.Query().Get("sort")
+	nsfw := api.parseBool(r.URL.Query().Get("nsfw"))
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
 
@@ -42,6 +44,7 @@ func (api *API) handleGetManga(w http.ResponseWriter, r *http.Request) {
 		Title:     title,
 		StartDate: startDate,
 		EndDate:   endDate,
+		NSFW:      nsfw,
 		Sort:      sort,
 		Page:      page,
 		Limit:     limit,

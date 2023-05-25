@@ -342,6 +342,13 @@ paths:
         in: query
         name: end_date
         type: string
+      - description: nsfw
+        enum:
+        - "true"
+        - "false"
+        in: query
+        name: nsfw
+        type: string
       - default: popularity
         description: sort
         enum:

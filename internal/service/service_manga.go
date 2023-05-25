@@ -85,6 +85,7 @@ type GetMangaRequest struct {
 	Type      entity.Type       `validate:"omitempty,oneof=MANGA NOVEL ONE_SHOT DOUJINSHI MANHWA MANHUA OEL LIGHT_NOVEL" mod:"trim,ucase"`
 	StartDate string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
 	EndDate   string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
+	NSFW      *bool             ``
 	Sort      string            `validate:"omitempty,oneof=title -title mean -mean rank -rank popularity -popularity member -member favorite -favorite start_date -start_date" mod:"default=popularity,trim,lcase"`
 	Page      int               `validate:"required,gte=1" mod:"default=1"`
 	Limit     int               `validate:"required,gte=-1" mod:"default=20"`
@@ -102,6 +103,7 @@ func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]manga, 
 		Type:      data.Type,
 		StartDate: utils.ParseToTimePtr("2006-01-02", data.StartDate),
 		EndDate:   utils.ParseToTimePtr("2006-01-02", data.EndDate),
+		NSFW:      data.NSFW,
 		Sort:      data.Sort,
 		Page:      data.Page,
 		Limit:     data.Limit,

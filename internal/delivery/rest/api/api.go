@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strconv"
+
 	"github.com/go-chi/chi"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"github.com/rl404/fairy/log"
@@ -47,4 +49,12 @@ func (api *API) Register(r chi.Router, nrApp *newrelic.Application) {
 
 		r.Get("/user/{username}/manga", api.handleGetUserManga)
 	})
+}
+
+func (api *API) parseBool(str string) *bool {
+	b, err := strconv.ParseBool(str)
+	if err != nil {
+		return nil
+	}
+	return &b
 }
