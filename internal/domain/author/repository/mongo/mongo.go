@@ -9,7 +9,6 @@ import (
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Mongo contains functions for author mongodb.
@@ -71,39 +70,68 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Author) (int, err
 
 // GetAll to get all.
 func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity.Author, int, int, error) {
-	filter := bson.M{}
-	opt := options.Find().SetSort(bson.M{"first_name": 1}).SetSkip(int64((data.Page - 1) * data.Limit)).SetLimit(int64(data.Limit))
+	newFieldStage := bson.D{{Key: "$addFields", Value: bson.M{
+		"name": bson.M{
+			"$cond": bson.A{
+				bson.M{"$eq": bson.A{"$first_name", ""}},
+				"$last_name",
+				bson.M{
+					"$cond": bson.A{
+						bson.M{"$eq": bson.A{"$last_name", ""}},
+						"$first_name",
+						bson.M{
+							"$concat": bson.A{"$first_name", " ", "$last_name"},
+						},
+					},
+				},
+			},
+		},
+	}}}
+	matchStage := bson.D{}
+	sortStage := bson.D{{Key: "$sort", Value: bson.M{"name": 1}}}
+	skipStage := bson.D{{Key: "$skip", Value: (data.Page - 1) * data.Limit}}
+	limitStage := bson.D{}
+	countStage := bson.D{{Key: "$count", Value: "count"}}
 
 	if data.Name != "" {
-		filter = bson.M{"$or": []bson.M{
+		matchStage = m.addMatch(matchStage, "$or", []bson.M{
 			{"first_name": bson.M{"$regex": data.Name, "$options": "i"}},
 			{"last_name": bson.M{"$regex": data.Name, "$options": "i"}},
-		}}
+		})
 	}
 
-	if data.Limit < 0 {
-		opt.SetLimit(0)
+	if data.Limit > 0 {
+		limitStage = append(limitStage, bson.E{Key: "$limit", Value: data.Limit})
 	}
 
-	c, err := m.db.Find(ctx, filter, opt)
-	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
-	}
-	defer c.Close(ctx)
-
-	var authors []entity.Author
-	for c.Next(ctx) {
-		var author author
-		if err := c.Decode(&author); err != nil {
-			return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
-		}
-		authors = append(authors, author.toEntity())
-	}
-
-	total, err := m.db.CountDocuments(ctx, filter, options.Count())
+	cursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, sortStage, skipStage, limitStage))
 	if err != nil {
 		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
 	}
 
-	return authors, int(total), http.StatusOK, nil
+	var authors []author
+	if err := cursor.All(ctx, &authors); err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	res := make([]entity.Author, len(authors))
+	for i, author := range authors {
+		res[i] = author.toEntity()
+	}
+
+	cntCursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, countStage))
+	if err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	var total []map[string]int64
+	if err := cntCursor.All(ctx, &total); err != nil {
+		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+
+	if len(total) == 0 {
+		return res, 0, http.StatusOK, nil
+	}
+
+	return res, int(total[0]["count"]), http.StatusOK, nil
 }
