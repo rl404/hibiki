@@ -334,6 +334,16 @@ paths:
         in: query
         name: type
         type: string
+      - description: status
+        enum:
+        - FINISHED
+        - RELEASING
+        - NOT_YET
+        - HIATUS
+        - DISCONTINUED
+        in: query
+        name: status
+        type: string
       - description: start date (yyyy-mm-dd)
         in: query
         name: start_date

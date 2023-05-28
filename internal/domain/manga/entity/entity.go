@@ -77,6 +77,7 @@ type GetAllRequest struct {
 	Mode       SearchMode
 	Title      string
 	Type       Type
+	Status     Status
 	StartDate  *time.Time
 	EndDate    *time.Time
 	AuthorID   int64

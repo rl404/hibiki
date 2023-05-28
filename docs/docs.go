@@ -273,6 +273,19 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "enum": [
+                            "FINISHED",
+                            "RELEASING",
+                            "NOT_YET",
+                            "HIATUS",
+                            "DISCONTINUED"
+                        ],
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "start date (yyyy-mm-dd)",
                         "name": "start_date",

@@ -209,6 +209,10 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 		matchStage = m.addMatch(matchStage, "type", data.Type)
 	}
 
+	if data.Status != "" {
+		matchStage = m.addMatch(matchStage, "status", data.Status)
+	}
+
 	if data.StartDate != nil {
 		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$gte": data.StartDate})
 	}

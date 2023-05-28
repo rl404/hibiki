@@ -83,6 +83,7 @@ type GetMangaRequest struct {
 	Mode       entity.SearchMode `validate:"oneof=ALL SIMPLE" mod:"default=SIMPLE,trim,ucase"`
 	Title      string            `validate:"omitempty,gte=3" mod:"trim,lcase"`
 	Type       entity.Type       `validate:"omitempty,oneof=MANGA NOVEL ONE_SHOT DOUJINSHI MANHWA MANHUA OEL LIGHT_NOVEL" mod:"trim,ucase"`
+	Status     entity.Status     `validate:"omitempty,oneof=FINISHED RELEASING NOT_YET HIATUS DISCONTINUED" mod:"trim,ucase"`
 	StartDate  string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
 	EndDate    string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
 	AuthorID   int64             `validate:"omitempty,gt=0"`
@@ -104,6 +105,7 @@ func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]manga, 
 		Mode:       data.Mode,
 		Title:      data.Title,
 		Type:       data.Type,
+		Status:     data.Status,
 		StartDate:  utils.ParseToTimePtr("2006-01-02", data.StartDate),
 		EndDate:    utils.ParseToTimePtr("2006-01-02", data.EndDate),
 		AuthorID:   data.AuthorID,

@@ -17,6 +17,7 @@ import (
 // @param mode query string false "mode" enums(ALL,SIMPLE) default(SIMPLE)
 // @param title query string false "title"
 // @param type query string false "type" enums(MANGA,NOVEL,ONE_SHOT,DOUJINSHI,MANHWA,MANHUA,OEL,LIGHT_NOVEL)
+// @param status query string false "status" enums(FINISHED,RELEASING,NOT_YET,HIATUS,DISCONTINUED)
 // @param start_date query string false "start date (yyyy-mm-dd)"
 // @param end_date query string false "end date (yyyy-mm-dd)"
 // @param author_id query integer false "author id"
@@ -34,6 +35,7 @@ func (api *API) handleGetManga(w http.ResponseWriter, r *http.Request) {
 	mode := r.URL.Query().Get("mode")
 	title := r.URL.Query().Get("title")
 	_type := r.URL.Query().Get("type")
+	status := r.URL.Query().Get("status")
 	startDate := r.URL.Query().Get("start_date")
 	endDate := r.URL.Query().Get("end_date")
 	authorID, _ := strconv.ParseInt(r.URL.Query().Get("author_id"), 10, 64)
@@ -47,6 +49,7 @@ func (api *API) handleGetManga(w http.ResponseWriter, r *http.Request) {
 	manga, pagination, code, err := api.service.GetManga(r.Context(), service.GetMangaRequest{
 		Mode:       entity.SearchMode(mode),
 		Type:       entity.Type(_type),
+		Status:     entity.Status(status),
 		Title:      title,
 		StartDate:  startDate,
 		EndDate:    endDate,
