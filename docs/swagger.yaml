@@ -342,6 +342,18 @@ paths:
         in: query
         name: end_date
         type: string
+      - description: author id
+        in: query
+        name: author_id
+        type: integer
+      - description: magazine id
+        in: query
+        name: magazine_id
+        type: integer
+      - description: genre id
+        in: query
+        name: genre_id
+        type: integer
       - description: nsfw
         enum:
         - "true"

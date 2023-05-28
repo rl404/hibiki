@@ -285,6 +285,24 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "author id",
+                        "name": "author_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "magazine id",
+                        "name": "magazine_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "genre id",
+                        "name": "genre_id",
+                        "in": "query"
+                    },
+                    {
                         "enum": [
                             "true",
                             "false"
