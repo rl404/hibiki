@@ -65,7 +65,7 @@ func (s *service) GetMangaByID(ctx context.Context, id int64) (*manga, int, erro
 
 func (s *service) validateID(ctx context.Context, id int64) (int, error) {
 	if id <= 0 {
-		return http.StatusBadRequest, errors.Wrap(ctx, errors.ErrInvalidMangaID)
+		return http.StatusBadRequest, errors.Wrap(ctx, errors.ErrInvalidID)
 	}
 
 	if _, code, err := s.emptyID.Get(ctx, id); err != nil {
@@ -80,15 +80,19 @@ func (s *service) validateID(ctx context.Context, id int64) (int, error) {
 
 // GetMangaRequest is get manga request model.
 type GetMangaRequest struct {
-	Mode      entity.SearchMode `validate:"oneof=ALL SIMPLE" mod:"default=SIMPLE,trim,ucase"`
-	Title     string            `validate:"omitempty,gte=3" mod:"trim,lcase"`
-	Type      entity.Type       `validate:"omitempty,oneof=MANGA NOVEL ONE_SHOT DOUJINSHI MANHWA MANHUA OEL LIGHT_NOVEL" mod:"trim,ucase"`
-	StartDate string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
-	EndDate   string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
-	NSFW      *bool             ``
-	Sort      string            `validate:"omitempty,oneof=title -title mean -mean rank -rank popularity -popularity member -member favorite -favorite start_date -start_date" mod:"default=popularity,trim,lcase"`
-	Page      int               `validate:"required,gte=1" mod:"default=1"`
-	Limit     int               `validate:"required,gte=-1" mod:"default=20"`
+	Mode       entity.SearchMode `validate:"oneof=ALL SIMPLE" mod:"default=SIMPLE,trim,ucase"`
+	Title      string            `validate:"omitempty,gte=3" mod:"trim,lcase"`
+	Type       entity.Type       `validate:"omitempty,oneof=MANGA NOVEL ONE_SHOT DOUJINSHI MANHWA MANHUA OEL LIGHT_NOVEL" mod:"trim,ucase"`
+	Status     entity.Status     `validate:"omitempty,oneof=FINISHED RELEASING NOT_YET HIATUS DISCONTINUED" mod:"trim,ucase"`
+	StartDate  string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
+	EndDate    string            `validate:"omitempty,datetime=2006-01-02" mod:"trim"`
+	AuthorID   int64             `validate:"omitempty,gt=0"`
+	MagazineID int64             `validate:"omitempty,gt=0"`
+	GenreID    int64             `validate:"omitempty,gt=0"`
+	NSFW       *bool             ``
+	Sort       string            `validate:"omitempty,oneof=title -title mean -mean rank -rank popularity -popularity member -member favorite -favorite start_date -start_date" mod:"default=popularity,trim,lcase"`
+	Page       int               `validate:"required,gte=1" mod:"default=1"`
+	Limit      int               `validate:"required,gte=-1" mod:"default=20"`
 }
 
 // GetManga to get manga list.
@@ -98,15 +102,19 @@ func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]manga, 
 	}
 
 	mangas, total, code, err := s.manga.GetAll(ctx, entity.GetAllRequest{
-		Mode:      data.Mode,
-		Title:     data.Title,
-		Type:      data.Type,
-		StartDate: utils.ParseToTimePtr("2006-01-02", data.StartDate),
-		EndDate:   utils.ParseToTimePtr("2006-01-02", data.EndDate),
-		NSFW:      data.NSFW,
-		Sort:      data.Sort,
-		Page:      data.Page,
-		Limit:     data.Limit,
+		Mode:       data.Mode,
+		Title:      data.Title,
+		Type:       data.Type,
+		Status:     data.Status,
+		StartDate:  utils.ParseToTimePtr("2006-01-02", data.StartDate),
+		EndDate:    utils.ParseToTimePtr("2006-01-02", data.EndDate),
+		AuthorID:   data.AuthorID,
+		MagazineID: data.MagazineID,
+		GenreID:    data.GenreID,
+		NSFW:       data.NSFW,
+		Sort:       data.Sort,
+		Page:       data.Page,
+		Limit:      data.Limit,
 	})
 	if err != nil {
 		return nil, nil, code, errors.Wrap(ctx, err)

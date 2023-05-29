@@ -45,3 +45,15 @@ func (s *service) GetMagazines(ctx context.Context, data GetMagazinesRequest) ([
 		Total: total,
 	}, http.StatusOK, nil
 }
+
+// GetMagazineByID to get magazine by id.
+func (s *service) GetMagazineByID(ctx context.Context, id int64) (*magazine, int, error) {
+	a, code, err := s.magazine.GetByID(ctx, id)
+	if err != nil {
+		return nil, code, errors.Wrap(ctx, err)
+	}
+	return &magazine{
+		ID:   a.ID,
+		Name: a.Name,
+	}, http.StatusOK, nil
+}

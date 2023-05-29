@@ -209,6 +209,10 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 		matchStage = m.addMatch(matchStage, "type", data.Type)
 	}
 
+	if data.Status != "" {
+		matchStage = m.addMatch(matchStage, "status", data.Status)
+	}
+
 	if data.StartDate != nil {
 		matchStage = m.addMatch(matchStage, "start_date_2", bson.M{"$gte": data.StartDate})
 	}
@@ -219,6 +223,18 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	if data.NSFW != nil {
 		matchStage = m.addMatch(matchStage, "nsfw", data.NSFW)
+	}
+
+	if data.AuthorID != 0 {
+		matchStage = m.addMatch(matchStage, "authors.id", data.AuthorID)
+	}
+
+	if data.MagazineID != 0 {
+		matchStage = m.addMatch(matchStage, "serialization.id", data.MagazineID)
+	}
+
+	if data.GenreID != 0 {
+		matchStage = m.addMatch(matchStage, "genres.id", data.GenreID)
 	}
 
 	if data.Limit > 0 {

@@ -45,3 +45,15 @@ func (s *service) GetGenres(ctx context.Context, data GetGenresRequest) ([]genre
 		Total: total,
 	}, http.StatusOK, nil
 }
+
+// GetGenreByID to get genre by id.
+func (s *service) GetGenreByID(ctx context.Context, id int64) (*genre, int, error) {
+	a, code, err := s.genre.GetByID(ctx, id)
+	if err != nil {
+		return nil, code, errors.Wrap(ctx, err)
+	}
+	return &genre{
+		ID:   a.ID,
+		Name: a.Name,
+	}, http.StatusOK, nil
+}

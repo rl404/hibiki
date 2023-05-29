@@ -10,4 +10,5 @@ import (
 type Repository interface {
 	BatchUpdate(ctx context.Context, data []entity.Author) (int, error)
 	GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity.Author, int, int, error)
+	GetByID(ctx context.Context, id int64) (*entity.Author, int, error)
 }

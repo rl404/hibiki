@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	_errors "errors"
 	"net/http"
 	"time"
 
@@ -134,4 +135,20 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 	}
 
 	return res, int(total[0]["count"]), http.StatusOK, nil
+}
+
+// GetByID to get by id.
+func (m *Mongo) GetByID(ctx context.Context, id int64) (*entity.Author, int, error) {
+	var author author
+	if err := m.db.FindOne(ctx, bson.M{"id": id}).Decode(&author); err != nil {
+		if _errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, http.StatusNotFound, errors.Wrap(ctx, errors.ErrInvalidID, err)
+		}
+		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+	}
+	return &entity.Author{
+		ID:        author.ID,
+		FirstName: author.FirstName,
+		LastName:  author.LastName,
+	}, http.StatusOK, nil
 }
