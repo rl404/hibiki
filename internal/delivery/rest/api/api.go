@@ -42,10 +42,13 @@ func (api *API) Register(r chi.Router, nrApp *newrelic.Application) {
 		r.Get("/manga/{mangaID}", api.handleGetMangaByID)
 
 		r.Get("/authors", api.handleGetAuthors)
+		r.Get("/authors/{authorID}", api.handleGetAuthorByID)
 
 		r.Get("/genres", api.handleGetGenres)
+		r.Get("/genres/{genreID}", api.handleGetGenreByID)
 
 		r.Get("/magazines", api.handleGetMagazines)
+		r.Get("/magazines/{magazineID}", api.handleGetMagazineByID)
 
 		r.Get("/user/{username}/manga", api.handleGetUserManga)
 	})

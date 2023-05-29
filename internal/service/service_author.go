@@ -52,3 +52,16 @@ func (s *service) GetAuthors(ctx context.Context, data GetAuthorsRequest) ([]aut
 		Total: total,
 	}, http.StatusOK, nil
 }
+
+// GetAuthorByID to get author by id.
+func (s *service) GetAuthorByID(ctx context.Context, id int64) (*author, int, error) {
+	a, code, err := s.author.GetByID(ctx, id)
+	if err != nil {
+		return nil, code, errors.Wrap(ctx, err)
+	}
+	return &author{
+		ID:        a.ID,
+		FirstName: a.FirstName,
+		LastName:  a.LastName,
+	}, http.StatusOK, nil
+}

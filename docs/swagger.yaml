@@ -174,6 +174,41 @@ info:
   description: Hibiki API.
   title: Hibiki API
 paths:
+  /author/{authorID}:
+    get:
+      parameters:
+      - description: author id
+        in: path
+        name: authorID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.author'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get author by id.
+      tags:
+      - Author
   /authors:
     get:
       parameters:
@@ -218,6 +253,41 @@ paths:
       summary: Get author list.
       tags:
       - Author
+  /genre/{genreID}:
+    get:
+      parameters:
+      - description: genre id
+        in: path
+        name: genreID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.genre'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get genre by id.
+      tags:
+      - Genre
   /genres:
     get:
       parameters:
@@ -262,6 +332,41 @@ paths:
       summary: Get genre list.
       tags:
       - Genre
+  /magazine/{magazineID}:
+    get:
+      parameters:
+      - description: magazine id
+        in: path
+        name: magazineID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/service.magazine'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get magazine by id.
+      tags:
+      - Magazine
   /magazines:
     get:
       parameters:

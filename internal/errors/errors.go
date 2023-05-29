@@ -13,7 +13,7 @@ var (
 	ErrInternalServer       = errors.New("internal server error")
 	ErrInvalidRequestFormat = errors.New("invalid request format")
 	ErrInvalidMessageType   = errors.New("invalid message type")
-	ErrInvalidMangaID       = errors.New("invalid manga id")
+	ErrInvalidID            = errors.New("invalid id")
 	ErrMangaNotFound        = errors.New("manga not found")
 	ErrDataStillNew         = errors.New("data is still new")
 )

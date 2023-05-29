@@ -21,8 +21,13 @@ type Service interface {
 	GetMangaByID(ctx context.Context, id int64) (*manga, int, error)
 
 	GetAuthors(ctx context.Context, data GetAuthorsRequest) ([]author, *pagination, int, error)
+	GetAuthorByID(ctx context.Context, id int64) (*author, int, error)
+
 	GetGenres(ctx context.Context, data GetGenresRequest) ([]genre, *pagination, int, error)
+	GetGenreByID(ctx context.Context, id int64) (*genre, int, error)
+
 	GetMagazines(ctx context.Context, data GetMagazinesRequest) ([]magazine, *pagination, int, error)
+	GetMagazineByID(ctx context.Context, id int64) (*magazine, int, error)
 
 	GetUserManga(ctx context.Context, data GetUserMangaRequest) ([]userManga, *pagination, int, error)
 

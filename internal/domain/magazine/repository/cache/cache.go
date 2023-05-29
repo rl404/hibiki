@@ -55,3 +55,22 @@ func (c *Cache) GetAll(ctx context.Context, req entity.GetAllRequest) (_ []entit
 
 	return data.Data, data.Total, code, nil
 }
+
+// GetByID to get by id.
+func (c *Cache) GetByID(ctx context.Context, id int64) (data *entity.Magazine, code int, err error) {
+	key := utils.GetKey("magazine", id)
+	if c.cacher.Get(ctx, key, &data) == nil {
+		return data, http.StatusOK, nil
+	}
+
+	data, code, err = c.repo.GetByID(ctx, id)
+	if err != nil {
+		return nil, code, errors.Wrap(ctx, err)
+	}
+
+	if err := c.cacher.Set(ctx, key, data); err != nil {
+		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalCache, err)
+	}
+
+	return data, code, nil
+}

@@ -65,7 +65,7 @@ func (s *service) GetMangaByID(ctx context.Context, id int64) (*manga, int, erro
 
 func (s *service) validateID(ctx context.Context, id int64) (int, error) {
 	if id <= 0 {
-		return http.StatusBadRequest, errors.Wrap(ctx, errors.ErrInvalidMangaID)
+		return http.StatusBadRequest, errors.Wrap(ctx, errors.ErrInvalidID)
 	}
 
 	if _, code, err := s.emptyID.Get(ctx, id); err != nil {
