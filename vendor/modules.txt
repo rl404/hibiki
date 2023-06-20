@@ -190,7 +190,7 @@ github.com/mattn/go-isatty
 # github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe
 ## explicit
 github.com/montanaflynn/stats
-# github.com/newrelic/go-agent/v3 v3.22.1
+# github.com/newrelic/go-agent/v3 v3.23.0
 ## explicit; go 1.18
 github.com/newrelic/go-agent/v3/internal
 github.com/newrelic/go-agent/v3/internal/cat
@@ -204,8 +204,8 @@ github.com/newrelic/go-agent/v3/newrelic
 # github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.2
 ## explicit; go 1.17
 github.com/newrelic/go-agent/v3/integrations/nrgrpc
-# github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.3
-## explicit; go 1.17
+# github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.0
+## explicit; go 1.19
 github.com/newrelic/go-agent/v3/integrations/nrmongo
 # github.com/nsqio/go-nsq v1.1.0
 ## explicit; go 1.11
