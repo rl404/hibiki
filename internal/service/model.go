@@ -29,7 +29,7 @@ type related struct {
 	ID       int64           `json:"id"`
 	Title    string          `json:"title"`
 	Relation entity.Relation `json:"relation"  swaggertype:"string"`
-	Picture  string          `jspn:"picture"`
+	Picture  string          `json:"picture"`
 }
 
 type mangaAuthor struct {
