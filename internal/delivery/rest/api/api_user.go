@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
 	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/service"
 	"github.com/rl404/hibiki/internal/utils"
