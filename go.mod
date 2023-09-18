@@ -6,7 +6,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/newrelic/go-agent/v3 v3.24.1
+	github.com/newrelic/go-agent/v3 v3.25.1
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.1
 	github.com/rl404/fairy v0.23.0
 	github.com/rl404/nagato v0.3.2
@@ -26,6 +26,7 @@ require (
 	cloud.google.com/go/pubsub v1.32.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/allegro/bigcache/v3 v3.1.0 // indirect
+	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230611145640-acc696258285 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -51,7 +52,7 @@ require (
 	github.com/gosimple/unidecode v1.0.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.16.3 // indirect
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
@@ -69,6 +70,8 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/streadway/amqp v1.1.0 // indirect
 	github.com/swaggo/files/v2 v2.0.0 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasthttp v1.49.0 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
