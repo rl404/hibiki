@@ -67,9 +67,9 @@ jobs:
         run: |
           terraform import -input=false google_container_cluster.cluster ${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GKE_LOCATION }}/${{ secrets.GKE_CLUSTER_NAME }}
           terraform import -input=false google_container_node_pool.pool ${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GKE_LOCATION }}/${{ secrets.GKE_CLUSTER_NAME }}/${{ secrets.GKE_POOL_NAME }}
+          terraform import -input=false google_cloud_run_v2_service.server ${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLOUD_RUN_LOCATION }}/${{ secrets.CLOUD_RUN_NAME }}
           terraform import -input=false kubernetes_deployment.consumer default/${{ secrets.GKE_DEPLOYMENT_CONSUMER_NAME }}
           terraform import -input=false kubernetes_cron_job_v1.cron_fill default/${{ secrets.GKE_CRON_FILL_NAME }}
           terraform import -input=false kubernetes_cron_job_v1.cron_update default/${{ secrets.GKE_CRON_UPDATE_NAME }}
-          terraform import -input=false google_cloud_run_v2_service.server ${{ secrets.GCP_PROJECT_ID }}/${{ secrets.CLOUD_RUN_LOCATION }}/${{ secrets.CLOUD_RUN_NAME }}
         env:
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
