@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/errors"
 )
 
@@ -55,11 +56,10 @@ func Recoverer(next http.Handler) http.Handler {
 					w,
 					http.StatusInternalServerError,
 					nil,
-					errors.Wrap(
-						r.Context(),
-						errors.ErrInternalServer,
+					stack.Wrap(r.Context(),
+						fmt.Errorf("%s", debug.Stack()),
 						fmt.Errorf("%v", rvr),
-						fmt.Errorf("%s", debug.Stack())))
+						errors.ErrInternalServer))
 			}
 		}()
 

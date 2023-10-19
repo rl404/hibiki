@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/rl404/hibiki/internal/errors"
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/service"
 	"github.com/rl404/hibiki/internal/utils"
 )
@@ -33,5 +33,5 @@ func (api *API) handleGetUserManga(w http.ResponseWriter, r *http.Request) {
 		Limit:    limit,
 	})
 
-	utils.ResponseWithJSON(w, code, manga, errors.Wrap(r.Context(), err), pagination)
+	utils.ResponseWithJSON(w, code, manga, stack.Wrap(r.Context(), err), pagination)
 }

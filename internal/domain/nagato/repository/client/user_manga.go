@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/nagato/entity"
-	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/nagato"
 )
 
@@ -26,7 +26,7 @@ func (c *Client) GetUserManga(ctx context.Context, data entity.GetUserMangaReque
 		),
 	)
 	if err != nil {
-		return nil, code, errors.Wrap(ctx, err)
+		return nil, code, stack.Wrap(ctx, err)
 	}
 
 	return manga, http.StatusOK, nil

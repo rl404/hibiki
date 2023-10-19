@@ -27,9 +27,7 @@ Powered by my [nagato](https://github.com/rl404/nagato) library and [MyAnimeList
   - no cache
   - inmemory
   - [Redis](https://redis.io/)
-  - [Memcache](https://memcached.org/)
 - Interchangeable pubsub
-  - [NSQ](https://nsq.io/)
   - [RabbitMQ](https://www.rabbitmq.com/)
   - [Redis](https://redis.io/)
   - [Google PubSub](https://cloud.google.com/pubsub)
@@ -50,8 +48,8 @@ _More will be coming soon..._
 - [Go](https://go.dev/)
 - [MyAnimeList](https://myanimelist.net/) [client id](https://myanimelist.net/apiconfig)
 - [MongoDB](https://www.mongodb.com/)
-- PubSub ([NSQ](https://nsq.io/)/[RabbitMQ](https://www.rabbitmq.com/)/[Redis](https://redis.io/)/[Google PubSub](https://cloud.google.com/pubsub))
-- (optional) Cache ([Redis](https://redis.io/)/[Memcache](https://memcached.org/))
+- PubSub ([RabbitMQ](https://www.rabbitmq.com/)/[Redis](https://redis.io/)/[Google PubSub](https://cloud.google.com/pubsub))
+- (optional) Cache ([Redis](https://redis.io/))
 - (optional) [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
 - (optional) [Newrelic](https://newrelic.com/) license key
 
@@ -143,7 +141,7 @@ make docker-stop
 | `HIBIKI_HTTP_GRACEFUL_TIMEOUT` |            `10s`            | HTTP gracefull timeout.                                                                                    |
 | `HIBIKI_GRPC_PORT`             |           `46002`           | GRPC server port.                                                                                          |
 | `HIBIKI_GRPC_TIMEOUT`          |            `10s`            | GRPC timeout.                                                                                              |
-| `HIBIKI_CACHE_DIALECT`         |         `inmemory`          | Cache type (`nocache`/`redis`/`inmemory`/`memcache`)                                                       |
+| `HIBIKI_CACHE_DIALECT`         |         `inmemory`          | Cache type (`nocache`/`redis`/`inmemory`)                                                                  |
 | `HIBIKI_CACHE_ADDRESS`         |                             | Cache address.                                                                                             |
 | `HIBIKI_CACHE_PASSWORD`        |                             | Cache password.                                                                                            |
 | `HIBIKI_CACHE_TIME`            |            `24h`            | Cache time.                                                                                                |
@@ -155,7 +153,7 @@ make docker-stop
 | `HIBIKI_DB_MAX_CONN_OPEN`      |            `10`             | Max open database connection.                                                                              |
 | `HIBIKI_DB_MAX_CONN_IDLE`      |            `10`             | Max idle database connection.                                                                              |
 | `HIBIKI_DB_MAX_CONN_LIFETIME`  |            `1m`             | Max database connection lifetime.                                                                          |
-| `HIBIKI_PUBSUB_DIALECT`        |         `rabbitmq`          | Pubsub type (`nsq`/`rabbitmq`/`redis`/`google`)                                                            |
+| `HIBIKI_PUBSUB_DIALECT`        |         `rabbitmq`          | Pubsub type (`rabbitmq`/`redis`/`google`)                                                                  |
 | `HIBIKI_PUBSUB_ADDRESS`        |                             | Pubsub address (if you are using `google`, this will be your google project id).                           |
 | `HIBIKI_PUBSUB_PASSWORD`       |                             | Pubsub password (if you are using `google`, this will be the content of your google service account json). |
 | `HIBIKI_MAL_CLIENT_ID`         |                             | MyAnimeList client id.                                                                                     |

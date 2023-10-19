@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/author/entity"
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/bson"
@@ -33,7 +34,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Author) (int, err
 
 	cursor, err := m.db.Find(ctx, bson.M{"id": bson.M{"$in": ids}})
 	if err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	defer cursor.Close(ctx)
 
@@ -41,7 +42,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Author) (int, err
 	for cursor.Next(ctx) {
 		var author author
 		if err := cursor.Decode(&author); err != nil {
-			return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalServer, err)
+			return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalServer)
 		}
 
 		existMap[author.ID] = true
@@ -63,7 +64,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Author) (int, err
 	}
 
 	if _, err := m.db.BulkWrite(ctx, models); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	return http.StatusOK, nil
@@ -107,12 +108,12 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	cursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, sortStage, skipStage, limitStage))
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	var authors []author
 	if err := cursor.All(ctx, &authors); err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	res := make([]entity.Author, len(authors))
@@ -122,12 +123,12 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	cntCursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, countStage))
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	var total []map[string]int64
 	if err := cntCursor.All(ctx, &total); err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	if len(total) == 0 {
@@ -142,9 +143,9 @@ func (m *Mongo) GetByID(ctx context.Context, id int64) (*entity.Author, int, err
 	var author author
 	if err := m.db.FindOne(ctx, bson.M{"id": id}).Decode(&author); err != nil {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
-			return nil, http.StatusNotFound, errors.Wrap(ctx, errors.ErrInvalidID, err)
+			return nil, http.StatusNotFound, stack.Wrap(ctx, err, errors.ErrInvalidID)
 		}
-		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return &entity.Author{
 		ID:        author.ID,

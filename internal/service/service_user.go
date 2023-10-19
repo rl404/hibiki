@@ -5,9 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	publisherEntity "github.com/rl404/hibiki/internal/domain/publisher/entity"
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/user_manga/entity"
-	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/utils"
 )
 
@@ -33,7 +32,7 @@ type GetUserMangaRequest struct {
 // GetUserManga to get user manga.
 func (s *service) GetUserManga(ctx context.Context, data GetUserMangaRequest) ([]userManga, *pagination, int, error) {
 	if err := utils.Validate(&data); err != nil {
-		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
+		return nil, nil, http.StatusBadRequest, stack.Wrap(ctx, err)
 	}
 
 	userMangas, cnt, code, err := s.userManga.Get(ctx, entity.GetUserMangaRequest{
@@ -42,13 +41,13 @@ func (s *service) GetUserManga(ctx context.Context, data GetUserMangaRequest) ([
 		Limit:    data.Limit,
 	})
 	if err != nil {
-		return nil, nil, code, errors.Wrap(ctx, err)
+		return nil, nil, code, stack.Wrap(ctx, err)
 	}
 
 	if cnt == 0 {
 		// Queue to parse.
-		if err := s.publisher.PublishParseUserManga(ctx, publisherEntity.ParseUserMangaRequest{Username: data.Username}); err != nil {
-			return nil, nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalServer, err)
+		if err := s.publisher.PublishParseUserManga(ctx, data.Username); err != nil {
+			return nil, nil, http.StatusInternalServerError, stack.Wrap(ctx, err)
 		}
 		return nil, nil, http.StatusAccepted, nil
 	}

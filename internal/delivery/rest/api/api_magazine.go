@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/service"
 	"github.com/rl404/hibiki/internal/utils"
@@ -31,7 +32,7 @@ func (api *API) handleGetMagazines(w http.ResponseWriter, r *http.Request) {
 		Limit: limit,
 	})
 
-	utils.ResponseWithJSON(w, code, magazines, errors.Wrap(r.Context(), err), pagination)
+	utils.ResponseWithJSON(w, code, magazines, stack.Wrap(r.Context(), err), pagination)
 }
 
 // @summary Get magazine by id.
@@ -46,10 +47,10 @@ func (api *API) handleGetMagazines(w http.ResponseWriter, r *http.Request) {
 func (api *API) handleGetMagazineByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "magazineID"), 10, 64)
 	if err != nil {
-		utils.ResponseWithJSON(w, http.StatusBadRequest, nil, errors.Wrap(r.Context(), errors.ErrInvalidID, err))
+		utils.ResponseWithJSON(w, http.StatusBadRequest, nil, stack.Wrap(r.Context(), err, errors.ErrInvalidID))
 		return
 	}
 
 	magazine, code, err := api.service.GetMagazineByID(r.Context(), id)
-	utils.ResponseWithJSON(w, code, magazine, errors.Wrap(r.Context(), err))
+	utils.ResponseWithJSON(w, code, magazine, stack.Wrap(r.Context(), err))
 }

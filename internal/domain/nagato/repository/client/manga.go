@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/rl404/hibiki/internal/errors"
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/nagato"
 )
 
@@ -34,7 +34,7 @@ func (c *Client) GetMangaByID(ctx context.Context, id int) (*nagato.Manga, int, 
 		nagato.MangaFieldRelatedManga(),
 	)
 	if err != nil {
-		return nil, code, errors.Wrap(ctx, err)
+		return nil, code, stack.Wrap(ctx, err)
 	}
 
 	return manga, http.StatusOK, nil

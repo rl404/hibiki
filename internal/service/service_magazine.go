@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/magazine/entity"
-	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/utils"
 )
 
@@ -19,7 +19,7 @@ type GetMagazinesRequest struct {
 // GetMagazines to get magazine list.
 func (s *service) GetMagazines(ctx context.Context, data GetMagazinesRequest) ([]magazine, *pagination, int, error) {
 	if err := utils.Validate(&data); err != nil {
-		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
+		return nil, nil, http.StatusBadRequest, stack.Wrap(ctx, err)
 	}
 
 	magazines, total, code, err := s.magazine.GetAll(ctx, entity.GetAllRequest{
@@ -28,7 +28,7 @@ func (s *service) GetMagazines(ctx context.Context, data GetMagazinesRequest) ([
 		Limit: data.Limit,
 	})
 	if err != nil {
-		return nil, nil, code, errors.Wrap(ctx, err)
+		return nil, nil, code, stack.Wrap(ctx, err)
 	}
 
 	res := make([]magazine, len(magazines))
@@ -50,7 +50,7 @@ func (s *service) GetMagazines(ctx context.Context, data GetMagazinesRequest) ([
 func (s *service) GetMagazineByID(ctx context.Context, id int64) (*magazine, int, error) {
 	a, code, err := s.magazine.GetByID(ctx, id)
 	if err != nil {
-		return nil, code, errors.Wrap(ctx, err)
+		return nil, code, stack.Wrap(ctx, err)
 	}
 	return &magazine{
 		ID:   a.ID,

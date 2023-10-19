@@ -5,11 +5,9 @@ import (
 	"time"
 
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/rl404/fairy/cache"
 	_nr "github.com/rl404/fairy/log/newrelic"
 	nrCache "github.com/rl404/fairy/monitoring/newrelic/cache"
 	nrPS "github.com/rl404/fairy/monitoring/newrelic/pubsub"
-	"github.com/rl404/fairy/pubsub"
 	"github.com/rl404/hibiki/internal/delivery/cron"
 	authorRepository "github.com/rl404/hibiki/internal/domain/author/repository"
 	authorCache "github.com/rl404/hibiki/internal/domain/author/repository/cache"
@@ -37,6 +35,8 @@ import (
 	userMangaMongo "github.com/rl404/hibiki/internal/domain/user_manga/repository/mongo"
 	"github.com/rl404/hibiki/internal/service"
 	"github.com/rl404/hibiki/internal/utils"
+	"github.com/rl404/hibiki/pkg/cache"
+	"github.com/rl404/hibiki/pkg/pubsub"
 )
 
 func cronFill() error {
@@ -83,7 +83,7 @@ func cronFill() error {
 	if err != nil {
 		return err
 	}
-	ps = nrPS.New(cfg.PubSub.Dialect, ps)
+	ps = nrPS.New(cfg.PubSub.Dialect, ps, nrApp)
 	utils.Info("pubsub initialized")
 	defer ps.Close()
 
@@ -141,7 +141,7 @@ func cronFill() error {
 
 	// Run cron.
 	utils.Info("filling missing data...")
-	if err := cron.New(service).Fill(nrApp, cfg.Cron.FillLimit); err != nil {
+	if err := cron.New(service, nrApp).Fill(cfg.Cron.FillLimit); err != nil {
 		return err
 	}
 

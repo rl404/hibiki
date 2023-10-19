@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/manga_stats_history/entity"
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -24,7 +25,7 @@ func New(db *mongo.Database) *Mongo {
 // Create to create new manga stats history.
 func (m *Mongo) Create(ctx context.Context, data entity.MangaStatsHistory) (int, error) {
 	if _, err := m.db.InsertOne(ctx, m.fromEntity(data)); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return http.StatusOK, nil
 }

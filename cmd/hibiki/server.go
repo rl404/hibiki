@@ -9,11 +9,9 @@ import (
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/newrelic/go-agent/v3/newrelic"
-	"github.com/rl404/fairy/cache"
 	_nr "github.com/rl404/fairy/log/newrelic"
 	nrCache "github.com/rl404/fairy/monitoring/newrelic/cache"
 	nrPS "github.com/rl404/fairy/monitoring/newrelic/pubsub"
-	"github.com/rl404/fairy/pubsub"
 	httpAPI "github.com/rl404/hibiki/internal/delivery/rest/api"
 	"github.com/rl404/hibiki/internal/delivery/rest/ping"
 	"github.com/rl404/hibiki/internal/delivery/rest/swagger"
@@ -43,7 +41,9 @@ import (
 	userMangaMongo "github.com/rl404/hibiki/internal/domain/user_manga/repository/mongo"
 	"github.com/rl404/hibiki/internal/service"
 	"github.com/rl404/hibiki/internal/utils"
+	"github.com/rl404/hibiki/pkg/cache"
 	"github.com/rl404/hibiki/pkg/http"
+	"github.com/rl404/hibiki/pkg/pubsub"
 )
 
 func server() error {
@@ -90,7 +90,7 @@ func server() error {
 	if err != nil {
 		return err
 	}
-	ps = nrPS.New(cfg.PubSub.Dialect, ps)
+	ps = nrPS.New(cfg.PubSub.Dialect, ps, nrApp)
 	utils.Info("pubsub initialized")
 	defer ps.Close()
 

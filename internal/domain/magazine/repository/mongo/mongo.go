@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/magazine/entity"
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/bson"
@@ -34,7 +35,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Magazine) (int, e
 
 	cursor, err := m.db.Find(ctx, bson.M{"id": bson.M{"$in": ids}})
 	if err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	defer cursor.Close(ctx)
 
@@ -42,7 +43,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Magazine) (int, e
 	for cursor.Next(ctx) {
 		var magazine magazine
 		if err := cursor.Decode(&magazine); err != nil {
-			return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalServer, err)
+			return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalServer)
 		}
 
 		existMap[magazine.ID] = true
@@ -60,7 +61,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.Magazine) (int, e
 	}
 
 	if _, err := m.db.BulkWrite(ctx, models); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	return http.StatusOK, nil
@@ -81,7 +82,7 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	c, err := m.db.Find(ctx, filter, opt)
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	defer c.Close(ctx)
 
@@ -89,7 +90,7 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 	for c.Next(ctx) {
 		var magazine magazine
 		if err := c.Decode(&magazine); err != nil {
-			return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+			return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 		}
 		magazines = append(magazines, entity.Magazine{
 			ID:   magazine.ID,
@@ -99,7 +100,7 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	total, err := m.db.CountDocuments(ctx, filter, options.Count())
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	return magazines, int(total), http.StatusOK, nil
@@ -110,9 +111,9 @@ func (m *Mongo) GetByID(ctx context.Context, id int64) (*entity.Magazine, int, e
 	var magazine magazine
 	if err := m.db.FindOne(ctx, bson.M{"id": id}).Decode(&magazine); err != nil {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
-			return nil, http.StatusNotFound, errors.Wrap(ctx, errors.ErrInvalidID, err)
+			return nil, http.StatusNotFound, stack.Wrap(ctx, err, errors.ErrInvalidID)
 		}
-		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return &entity.Magazine{
 		ID:   magazine.ID,

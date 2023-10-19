@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/author/entity"
-	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/utils"
 )
 
@@ -25,7 +25,7 @@ type GetAuthorsRequest struct {
 // GetAuthors to get author list.
 func (s *service) GetAuthors(ctx context.Context, data GetAuthorsRequest) ([]author, *pagination, int, error) {
 	if err := utils.Validate(&data); err != nil {
-		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
+		return nil, nil, http.StatusBadRequest, stack.Wrap(ctx, err)
 	}
 
 	authors, total, code, err := s.author.GetAll(ctx, entity.GetAllRequest{
@@ -34,7 +34,7 @@ func (s *service) GetAuthors(ctx context.Context, data GetAuthorsRequest) ([]aut
 		Limit: data.Limit,
 	})
 	if err != nil {
-		return nil, nil, code, errors.Wrap(ctx, err)
+		return nil, nil, code, stack.Wrap(ctx, err)
 	}
 
 	res := make([]author, len(authors))
@@ -57,7 +57,7 @@ func (s *service) GetAuthors(ctx context.Context, data GetAuthorsRequest) ([]aut
 func (s *service) GetAuthorByID(ctx context.Context, id int64) (*author, int, error) {
 	a, code, err := s.author.GetByID(ctx, id)
 	if err != nil {
-		return nil, code, errors.Wrap(ctx, err)
+		return nil, code, stack.Wrap(ctx, err)
 	}
 	return &author{
 		ID:        a.ID,

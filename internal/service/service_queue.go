@@ -4,8 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/rl404/hibiki/internal/domain/publisher/entity"
-	"github.com/rl404/hibiki/internal/errors"
+	"github.com/rl404/fairy/errors/stack"
 )
 
 // QueueOldReleasingManga to queue old releasing manga data.
@@ -14,12 +13,12 @@ func (s *service) QueueOldReleasingManga(ctx context.Context, limit int) (int, i
 
 	ids, code, err := s.manga.GetOldReleasingIDs(ctx)
 	if err != nil {
-		return cnt, code, errors.Wrap(ctx, err)
+		return cnt, code, stack.Wrap(ctx, err)
 	}
 
 	for i := 0; i < len(ids) && cnt < limit; i, cnt = i+1, cnt+1 {
-		if err := s.publisher.PublishParseManga(ctx, entity.ParseMangaRequest{ID: ids[i]}); err != nil {
-			return cnt, http.StatusInternalServerError, errors.Wrap(ctx, err)
+		if err := s.publisher.PublishParseManga(ctx, ids[i]); err != nil {
+			return cnt, http.StatusInternalServerError, stack.Wrap(ctx, err)
 		}
 	}
 
@@ -32,12 +31,12 @@ func (s *service) QueueOldFinishedManga(ctx context.Context, limit int) (int, in
 
 	ids, code, err := s.manga.GetOldFinishedIDs(ctx)
 	if err != nil {
-		return cnt, code, errors.Wrap(ctx, err)
+		return cnt, code, stack.Wrap(ctx, err)
 	}
 
 	for i := 0; i < len(ids) && cnt < limit; i, cnt = i+1, cnt+1 {
-		if err := s.publisher.PublishParseManga(ctx, entity.ParseMangaRequest{ID: ids[i]}); err != nil {
-			return cnt, http.StatusInternalServerError, errors.Wrap(ctx, err)
+		if err := s.publisher.PublishParseManga(ctx, ids[i]); err != nil {
+			return cnt, http.StatusInternalServerError, stack.Wrap(ctx, err)
 		}
 	}
 
@@ -50,12 +49,12 @@ func (s *service) QueueOldNotYetManga(ctx context.Context, limit int) (int, int,
 
 	ids, code, err := s.manga.GetOldFinishedIDs(ctx)
 	if err != nil {
-		return cnt, code, errors.Wrap(ctx, err)
+		return cnt, code, stack.Wrap(ctx, err)
 	}
 
 	for i := 0; i < len(ids) && cnt < limit; i, cnt = i+1, cnt+1 {
-		if err := s.publisher.PublishParseManga(ctx, entity.ParseMangaRequest{ID: ids[i]}); err != nil {
-			return cnt, http.StatusInternalServerError, errors.Wrap(ctx, err)
+		if err := s.publisher.PublishParseManga(ctx, ids[i]); err != nil {
+			return cnt, http.StatusInternalServerError, stack.Wrap(ctx, err)
 		}
 	}
 
@@ -69,19 +68,19 @@ func (s *service) QueueMissingManga(ctx context.Context, limit int) (int, int, e
 	// Get max id.
 	maxID, code, err := s.manga.GetMaxID(ctx)
 	if err != nil {
-		return cnt, code, errors.Wrap(ctx, err)
+		return cnt, code, stack.Wrap(ctx, err)
 	}
 
 	// Get all existing manga id.
 	mangaIDs, code, err := s.manga.GetIDs(ctx)
 	if err != nil {
-		return cnt, code, errors.Wrap(ctx, err)
+		return cnt, code, stack.Wrap(ctx, err)
 	}
 
 	// Get all empty manga id,
 	emptyIDs, code, err := s.emptyID.GetIDs(ctx)
 	if err != nil {
-		return cnt, code, errors.Wrap(ctx, err)
+		return cnt, code, stack.Wrap(ctx, err)
 	}
 
 	idMap := make(map[int64]bool)
@@ -98,8 +97,8 @@ func (s *service) QueueMissingManga(ctx context.Context, limit int) (int, int, e
 			continue
 		}
 
-		if err := s.publisher.PublishParseManga(ctx, entity.ParseMangaRequest{ID: id}); err != nil {
-			return cnt, http.StatusInternalServerError, errors.Wrap(ctx, err)
+		if err := s.publisher.PublishParseManga(ctx, id); err != nil {
+			return cnt, http.StatusInternalServerError, stack.Wrap(ctx, err)
 		}
 
 		cnt++
@@ -114,12 +113,12 @@ func (s *service) QueueOldUserManga(ctx context.Context, limit int) (int, int, e
 
 	usernames, code, err := s.userManga.GetOldUsernames(ctx)
 	if err != nil {
-		return cnt, code, errors.Wrap(ctx, err)
+		return cnt, code, stack.Wrap(ctx, err)
 	}
 
 	for i := 0; i < len(usernames) && cnt < limit; i, cnt = i+1, cnt+1 {
-		if err := s.publisher.PublishParseUserManga(ctx, entity.ParseUserMangaRequest{Username: usernames[i]}); err != nil {
-			return cnt, http.StatusInternalServerError, errors.Wrap(ctx, err)
+		if err := s.publisher.PublishParseUserManga(ctx, usernames[i]); err != nil {
+			return cnt, http.StatusInternalServerError, stack.Wrap(ctx, err)
 		}
 	}
 

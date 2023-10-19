@@ -5,10 +5,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/rl404/fairy/errors/stack"
 	nagatoEntity "github.com/rl404/hibiki/internal/domain/nagato/entity"
-	publisherEntity "github.com/rl404/hibiki/internal/domain/publisher/entity"
 	"github.com/rl404/hibiki/internal/domain/user_manga/entity"
-	"github.com/rl404/hibiki/internal/errors"
 )
 
 func (s *service) updateUserManga(ctx context.Context, username string) (int, error) {
@@ -25,7 +24,7 @@ func (s *service) updateUserManga(ctx context.Context, username string) (int, er
 			Offset:   offset,
 		})
 		if err != nil {
-			return code, errors.Wrap(ctx, err)
+			return code, stack.Wrap(ctx, err)
 		}
 
 		for _, m := range manga {
@@ -33,8 +32,8 @@ func (s *service) updateUserManga(ctx context.Context, username string) (int, er
 			mangaList = append(mangaList, entity.UserMangaFromNagato(username, m))
 
 			// Queue related manga.
-			if err := s.publisher.PublishParseManga(ctx, publisherEntity.ParseMangaRequest{ID: int64(m.Manga.ID)}); err != nil {
-				return http.StatusInternalServerError, errors.Wrap(ctx, err)
+			if err := s.publisher.PublishParseManga(ctx, int64(m.Manga.ID)); err != nil {
+				return http.StatusInternalServerError, stack.Wrap(ctx, err)
 			}
 		}
 
@@ -47,12 +46,12 @@ func (s *service) updateUserManga(ctx context.Context, username string) (int, er
 
 	// Update.
 	if code, err := s.userManga.BatchUpdate(ctx, mangaList); err != nil {
-		return code, errors.Wrap(ctx, err)
+		return code, stack.Wrap(ctx, err)
 	}
 
 	// Delete manga not in list.
 	if code, err := s.userManga.DeleteNotInList(ctx, username, ids); err != nil {
-		return code, errors.Wrap(ctx, err)
+		return code, stack.Wrap(ctx, err)
 	}
 
 	return http.StatusOK, nil

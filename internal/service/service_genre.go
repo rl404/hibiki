@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/genre/entity"
-	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/utils"
 )
 
@@ -19,7 +19,7 @@ type GetGenresRequest struct {
 // GetGenres to get genre list.
 func (s *service) GetGenres(ctx context.Context, data GetGenresRequest) ([]genre, *pagination, int, error) {
 	if err := utils.Validate(&data); err != nil {
-		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
+		return nil, nil, http.StatusBadRequest, stack.Wrap(ctx, err)
 	}
 
 	genres, total, code, err := s.genre.GetAll(ctx, entity.GetAllRequest{
@@ -28,7 +28,7 @@ func (s *service) GetGenres(ctx context.Context, data GetGenresRequest) ([]genre
 		Limit: data.Limit,
 	})
 	if err != nil {
-		return nil, nil, code, errors.Wrap(ctx, err)
+		return nil, nil, code, stack.Wrap(ctx, err)
 	}
 
 	res := make([]genre, len(genres))
@@ -50,7 +50,7 @@ func (s *service) GetGenres(ctx context.Context, data GetGenresRequest) ([]genre
 func (s *service) GetGenreByID(ctx context.Context, id int64) (*genre, int, error) {
 	a, code, err := s.genre.GetByID(ctx, id)
 	if err != nil {
-		return nil, code, errors.Wrap(ctx, err)
+		return nil, code, stack.Wrap(ctx, err)
 	}
 	return &genre{
 		ID:   a.ID,

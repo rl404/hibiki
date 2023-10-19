@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,9 +38,9 @@ func (m *Mongo) GetByID(ctx context.Context, id int64) (*entity.Manga, int, erro
 	var manga manga
 	if err := m.db.FindOne(ctx, bson.M{"id": id}).Decode(&manga); err != nil {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
-			return nil, http.StatusNotFound, errors.Wrap(ctx, errors.ErrMangaNotFound, err)
+			return nil, http.StatusNotFound, stack.Wrap(ctx, err, errors.ErrMangaNotFound)
 		}
-		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return manga.toEntity(), http.StatusOK, nil
 }
@@ -50,18 +51,18 @@ func (m *Mongo) Update(ctx context.Context, data entity.Manga) (int, error) {
 	if err := m.db.FindOne(ctx, bson.M{"id": data.ID}).Decode(&manga); err != nil {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
 			if _, err := m.db.InsertOne(ctx, m.mangaFromEntity(data)); err != nil {
-				return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+				return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 			}
 			return http.StatusOK, nil
 		}
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	mm := m.mangaFromEntity(data)
 	mm.CreatedAt = manga.CreatedAt
 
 	if _, err := m.db.UpdateOne(ctx, bson.M{"id": data.ID}, bson.M{"$set": mm}); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	return http.StatusOK, nil
@@ -70,7 +71,7 @@ func (m *Mongo) Update(ctx context.Context, data entity.Manga) (int, error) {
 // DeleteByID to delete manga by id.
 func (m *Mongo) DeleteByID(ctx context.Context, id int64) (int, error) {
 	if _, err := m.db.DeleteOne(ctx, bson.M{"id": id}); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return http.StatusOK, nil
 }
@@ -90,7 +91,7 @@ func (m *Mongo) IsOld(ctx context.Context, id int64) (bool, int, error) {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
 			return true, http.StatusNotFound, nil
 		}
-		return true, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return true, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	return false, http.StatusOK, nil
@@ -103,7 +104,7 @@ func (m *Mongo) GetMaxID(ctx context.Context) (int64, int, error) {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
 			return 1, http.StatusOK, nil
 		}
-		return 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return manga.ID, http.StatusOK, nil
 }
@@ -112,14 +113,14 @@ func (m *Mongo) GetMaxID(ctx context.Context) (int64, int, error) {
 func (m *Mongo) GetIDs(ctx context.Context) ([]int64, int, error) {
 	cursor, err := m.db.Find(ctx, bson.M{}, options.Find().SetProjection(bson.M{"id": 1}))
 	if err != nil {
-		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	var ids []int64
 	for cursor.Next(ctx) {
 		var manga manga
 		if err := cursor.Decode(&manga); err != nil {
-			return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+			return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 		}
 
 		ids = append(ids, manga.ID)
@@ -134,7 +135,7 @@ func (m *Mongo) getOldIDs(ctx context.Context, statuses []entity.Status, age tim
 		"updated_at": bson.M{"$lte": primitive.NewDateTimeFromTime(time.Now().Add(-age))},
 	}, options.Find().SetProjection(bson.M{"id": 1}))
 	if err != nil {
-		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	defer cursor.Close(ctx)
 
@@ -142,7 +143,7 @@ func (m *Mongo) getOldIDs(ctx context.Context, statuses []entity.Status, age tim
 	for cursor.Next(ctx) {
 		var manga manga
 		if err := cursor.Decode(&manga); err != nil {
-			return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+			return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 		}
 
 		ids = append(ids, manga.ID)
@@ -243,12 +244,12 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	cursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, sortStage, projectStage, skipStage, limitStage))
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	var mangas []manga
 	if err := cursor.All(ctx, &mangas); err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	res := make([]entity.Manga, len(mangas))
@@ -258,12 +259,12 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 
 	cntCursor, err := m.db.Aggregate(ctx, m.getPipeline(newFieldStage, matchStage, countStage))
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	var total []map[string]int64
 	if err := cntCursor.All(ctx, &total); err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	if len(total) == 0 {
