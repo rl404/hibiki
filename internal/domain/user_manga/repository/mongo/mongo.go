@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/user_manga/entity"
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/bson"
@@ -34,7 +35,7 @@ func (m *Mongo) Get(ctx context.Context, data entity.GetUserMangaRequest) ([]*en
 
 	count, err := m.db.CountDocuments(ctx, filter)
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	if count == 0 {
@@ -43,7 +44,7 @@ func (m *Mongo) Get(ctx context.Context, data entity.GetUserMangaRequest) ([]*en
 
 	c, err := m.db.Find(ctx, filter, options.Find().SetSort(bson.M{"title": 1}).SetLimit(int64(data.Limit)).SetSkip(int64((data.Page-1)*data.Limit)))
 	if err != nil {
-		return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	defer c.Close(ctx)
 
@@ -51,7 +52,7 @@ func (m *Mongo) Get(ctx context.Context, data entity.GetUserMangaRequest) ([]*en
 	for c.Next(ctx) {
 		var um userManga
 		if err := c.Decode(&um); err != nil {
-			return nil, 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+			return nil, 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 		}
 
 		res = append(res, um.toEntity())
@@ -63,7 +64,7 @@ func (m *Mongo) Get(ctx context.Context, data entity.GetUserMangaRequest) ([]*en
 // DeleteByMangaID to delete by manga id.
 func (m *Mongo) DeleteByMangaID(ctx context.Context, mangaID int64) (int, error) {
 	if _, err := m.db.DeleteMany(ctx, bson.M{"manga_id": mangaID}); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return http.StatusOK, nil
 }
@@ -79,7 +80,7 @@ func (m *Mongo) IsOld(ctx context.Context, username string) (bool, int, error) {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
 			return true, http.StatusNotFound, nil
 		}
-		return true, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return true, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	return false, http.StatusOK, nil
@@ -89,7 +90,7 @@ func (m *Mongo) IsOld(ctx context.Context, username string) (bool, int, error) {
 func (m *Mongo) GetOldUsernames(ctx context.Context) ([]string, int, error) {
 	res, err := m.db.Distinct(ctx, "username", bson.M{"updated_at": bson.M{"$lte": primitive.NewDateTimeFromTime(time.Now().Add(-m.age))}})
 	if err != nil {
-		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	usernames := make([]string, len(res))
@@ -103,7 +104,7 @@ func (m *Mongo) GetOldUsernames(ctx context.Context) ([]string, int, error) {
 // DeleteNotInList to delete not in list.
 func (m *Mongo) DeleteNotInList(ctx context.Context, username string, ids []int64) (int, error) {
 	if _, err := m.db.DeleteMany(ctx, bson.M{"username": username, "manga_id": bson.M{"$nin": ids}}); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return http.StatusOK, nil
 }
@@ -117,7 +118,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.UserManga) (int, 
 
 	cursor, err := m.db.Find(ctx, bson.M{"username": username, "manga_id": bson.M{"$in": ids}})
 	if err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	defer cursor.Close(ctx)
 
@@ -125,7 +126,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.UserManga) (int, 
 	for cursor.Next(ctx) {
 		var userManga userManga
 		if err := cursor.Decode(&userManga); err != nil {
-			return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalServer, err)
+			return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalServer)
 		}
 
 		existMap[userManga.MangaID] = &userManga
@@ -146,7 +147,7 @@ func (m *Mongo) BatchUpdate(ctx context.Context, data []entity.UserManga) (int, 
 	}
 
 	if _, err := m.db.BulkWrite(ctx, models); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 
 	return http.StatusOK, nil

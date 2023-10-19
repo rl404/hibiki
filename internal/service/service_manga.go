@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
-	publisherEntity "github.com/rl404/hibiki/internal/domain/publisher/entity"
 	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/utils"
 )
@@ -42,7 +42,7 @@ type manga struct {
 // GetMangaByID to get manga by id.
 func (s *service) GetMangaByID(ctx context.Context, id int64) (*manga, int, error) {
 	if code, err := s.validateID(ctx, id); err != nil {
-		return nil, code, errors.Wrap(ctx, err)
+		return nil, code, stack.Wrap(ctx, err)
 	}
 
 	// Get manga from db.
@@ -50,12 +50,12 @@ func (s *service) GetMangaByID(ctx context.Context, id int64) (*manga, int, erro
 	if err != nil {
 		if code == http.StatusNotFound {
 			// Queue to parse.
-			if err := s.publisher.PublishParseManga(ctx, publisherEntity.ParseMangaRequest{ID: id}); err != nil {
-				return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalServer, err)
+			if err := s.publisher.PublishParseManga(ctx, id); err != nil {
+				return nil, http.StatusInternalServerError, stack.Wrap(ctx, err)
 			}
 			return nil, http.StatusAccepted, nil
 		}
-		return nil, code, errors.Wrap(ctx, err)
+		return nil, code, stack.Wrap(ctx, err)
 	}
 
 	manga := s.mangaFromEntity(mangaDB)
@@ -65,17 +65,17 @@ func (s *service) GetMangaByID(ctx context.Context, id int64) (*manga, int, erro
 
 func (s *service) validateID(ctx context.Context, id int64) (int, error) {
 	if id <= 0 {
-		return http.StatusBadRequest, errors.Wrap(ctx, errors.ErrInvalidID)
+		return http.StatusBadRequest, stack.Wrap(ctx, errors.ErrInvalidID)
 	}
 
 	if _, code, err := s.emptyID.Get(ctx, id); err != nil {
 		if code == http.StatusNotFound {
 			return http.StatusOK, nil
 		}
-		return code, errors.Wrap(ctx, err)
+		return code, stack.Wrap(ctx, err)
 	}
 
-	return http.StatusNotFound, errors.Wrap(ctx, errors.ErrMangaNotFound)
+	return http.StatusNotFound, stack.Wrap(ctx, errors.ErrMangaNotFound)
 }
 
 // GetMangaRequest is get manga request model.
@@ -98,7 +98,7 @@ type GetMangaRequest struct {
 // GetManga to get manga list.
 func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]manga, *pagination, int, error) {
 	if err := utils.Validate(&data); err != nil {
-		return nil, nil, http.StatusBadRequest, errors.Wrap(ctx, err)
+		return nil, nil, http.StatusBadRequest, stack.Wrap(ctx, err)
 	}
 
 	mangas, total, code, err := s.manga.GetAll(ctx, entity.GetAllRequest{
@@ -117,7 +117,7 @@ func (s *service) GetManga(ctx context.Context, data GetMangaRequest) ([]manga, 
 		Limit:      data.Limit,
 	})
 	if err != nil {
-		return nil, nil, code, errors.Wrap(ctx, err)
+		return nil, nil, code, stack.Wrap(ctx, err)
 	}
 
 	res := make([]manga, len(mangas))

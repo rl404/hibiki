@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/errors"
 	"github.com/rl404/hibiki/internal/service"
 	"github.com/rl404/hibiki/internal/utils"
@@ -31,7 +32,7 @@ func (api *API) handleGetAuthors(w http.ResponseWriter, r *http.Request) {
 		Limit: limit,
 	})
 
-	utils.ResponseWithJSON(w, code, authors, errors.Wrap(r.Context(), err), pagination)
+	utils.ResponseWithJSON(w, code, authors, stack.Wrap(r.Context(), err), pagination)
 }
 
 // @summary Get author by id.
@@ -46,10 +47,10 @@ func (api *API) handleGetAuthors(w http.ResponseWriter, r *http.Request) {
 func (api *API) handleGetAuthorByID(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "authorID"), 10, 64)
 	if err != nil {
-		utils.ResponseWithJSON(w, http.StatusBadRequest, nil, errors.Wrap(r.Context(), errors.ErrInvalidID, err))
+		utils.ResponseWithJSON(w, http.StatusBadRequest, nil, stack.Wrap(r.Context(), err, errors.ErrInvalidID))
 		return
 	}
 
 	author, code, err := api.service.GetAuthorByID(r.Context(), id)
-	utils.ResponseWithJSON(w, code, author, errors.Wrap(r.Context(), err))
+	utils.ResponseWithJSON(w, code, author, stack.Wrap(r.Context(), err))
 }

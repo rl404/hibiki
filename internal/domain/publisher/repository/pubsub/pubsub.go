@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/fairy/pubsub"
 	"github.com/rl404/hibiki/internal/domain/publisher/entity"
 	"github.com/rl404/hibiki/internal/errors"
@@ -24,34 +25,34 @@ func New(ps pubsub.PubSub, topic string) *Pubsub {
 }
 
 // PublishParseManga to publish parse manga.
-func (p *Pubsub) PublishParseManga(ctx context.Context, data entity.ParseMangaRequest) error {
-	d, err := json.Marshal(data)
+func (p *Pubsub) PublishParseManga(ctx context.Context, id int64) error {
+	d, err := json.Marshal(entity.Message{
+		Type: entity.TypeParseManga,
+		ID:   id,
+	})
 	if err != nil {
-		return errors.Wrap(ctx, errors.ErrInternalServer, err)
+		return stack.Wrap(ctx, err, errors.ErrInternalServer)
 	}
 
-	if err := p.pubsub.Publish(ctx, p.topic, entity.Message{
-		Type: entity.TypeParseManga,
-		Data: d,
-	}); err != nil {
-		return errors.Wrap(ctx, errors.ErrInternalServer, err)
+	if err := p.pubsub.Publish(ctx, p.topic, d); err != nil {
+		return stack.Wrap(ctx, err, errors.ErrInternalServer)
 	}
 
 	return nil
 }
 
 // PublishParseUserManga to publish parse user manga.
-func (p *Pubsub) PublishParseUserManga(ctx context.Context, data entity.ParseUserMangaRequest) error {
-	d, err := json.Marshal(data)
+func (p *Pubsub) PublishParseUserManga(ctx context.Context, username string) error {
+	d, err := json.Marshal(entity.Message{
+		Type:     entity.TypeParseUserManga,
+		Username: username,
+	})
 	if err != nil {
-		return errors.Wrap(ctx, errors.ErrInternalServer, err)
+		return stack.Wrap(ctx, err, errors.ErrInternalServer)
 	}
 
-	if err := p.pubsub.Publish(ctx, p.topic, entity.Message{
-		Type: entity.TypeParseUserManga,
-		Data: d,
-	}); err != nil {
-		return errors.Wrap(ctx, errors.ErrInternalServer, err)
+	if err := p.pubsub.Publish(ctx, p.topic, d); err != nil {
+		return stack.Wrap(ctx, err, errors.ErrInternalServer)
 	}
 
 	return nil

@@ -5,6 +5,7 @@ import (
 	_errors "errors"
 	"net/http"
 
+	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,9 +29,9 @@ func (m *Mongo) Get(ctx context.Context, id int64) (int64, int, error) {
 	var emptyID emptyID
 	if err := m.db.FindOne(ctx, bson.M{"manga_id": id}).Decode(&emptyID); err != nil {
 		if _errors.Is(err, mongo.ErrNoDocuments) {
-			return 0, http.StatusNotFound, errors.Wrap(ctx, errors.ErrMangaNotFound, err)
+			return 0, http.StatusNotFound, stack.Wrap(ctx, err, errors.ErrMangaNotFound)
 		}
-		return 0, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return 0, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return emptyID.MangaID, http.StatusOK, nil
 }
@@ -40,7 +41,7 @@ func (m *Mongo) Create(ctx context.Context, id int64) (int, error) {
 	if _, err := m.db.InsertOne(ctx, &emptyID{
 		MangaID: id,
 	}); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return http.StatusCreated, nil
 }
@@ -48,7 +49,7 @@ func (m *Mongo) Create(ctx context.Context, id int64) (int, error) {
 // Delete to empty id.
 func (m *Mongo) Delete(ctx context.Context, id int64) (int, error) {
 	if _, err := m.db.DeleteOne(ctx, bson.M{"manga_id": id}); err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	return http.StatusOK, nil
 }
@@ -58,14 +59,14 @@ func (m *Mongo) GetIDs(ctx context.Context) ([]int64, int, error) {
 	var ids []int64
 	c, err := m.db.Find(ctx, bson.M{}, options.Find().SetProjection(bson.M{"manga_id": 1}))
 	if err != nil {
-		return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
 	defer c.Close(ctx)
 
 	for c.Next(ctx) {
 		var emptyID emptyID
 		if err := c.Decode(&emptyID); err != nil {
-			return nil, http.StatusInternalServerError, errors.Wrap(ctx, errors.ErrInternalDB, err)
+			return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 		}
 		ids = append(ids, emptyID.MangaID)
 	}

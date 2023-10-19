@@ -4,13 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/rl404/fairy/errors/stack"
 	authorEntity "github.com/rl404/hibiki/internal/domain/author/entity"
 	genreEntity "github.com/rl404/hibiki/internal/domain/genre/entity"
 	magazineEntity "github.com/rl404/hibiki/internal/domain/magazine/entity"
 	mangaEntity "github.com/rl404/hibiki/internal/domain/manga/entity"
 	historyEntity "github.com/rl404/hibiki/internal/domain/manga_stats_history/entity"
-	publisherEntity "github.com/rl404/hibiki/internal/domain/publisher/entity"
-	"github.com/rl404/hibiki/internal/errors"
 )
 
 func (s *service) updateManga(ctx context.Context, id int64) (int, error) {
@@ -20,19 +19,19 @@ func (s *service) updateManga(ctx context.Context, id int64) (int, error) {
 		if code == http.StatusNotFound {
 			// Insert empty id.
 			if code, err := s.emptyID.Create(ctx, id); err != nil {
-				return code, errors.Wrap(ctx, err)
+				return code, stack.Wrap(ctx, err)
 			}
 
 			// Delete existing data.
 			if code, err := s.manga.DeleteByID(ctx, id); err != nil {
-				return code, errors.Wrap(ctx, err)
+				return code, stack.Wrap(ctx, err)
 			}
 
 			if code, err := s.userManga.DeleteByMangaID(ctx, id); err != nil {
-				return code, errors.Wrap(ctx, err)
+				return code, stack.Wrap(ctx, err)
 			}
 		}
-		return code, errors.Wrap(ctx, err)
+		return code, stack.Wrap(ctx, err)
 	}
 
 	// Update genre data.
@@ -46,7 +45,7 @@ func (s *service) updateManga(ctx context.Context, id int64) (int, error) {
 		}
 
 		if code, err := s.genre.BatchUpdate(ctx, genres); err != nil {
-			return code, errors.Wrap(ctx, err)
+			return code, stack.Wrap(ctx, err)
 		}
 	}
 
@@ -62,7 +61,7 @@ func (s *service) updateManga(ctx context.Context, id int64) (int, error) {
 		}
 
 		if code, err := s.author.BatchUpdate(ctx, authors); err != nil {
-			return code, errors.Wrap(ctx, err)
+			return code, stack.Wrap(ctx, err)
 		}
 	}
 
@@ -77,18 +76,18 @@ func (s *service) updateManga(ctx context.Context, id int64) (int, error) {
 		}
 
 		if code, err := s.magazine.BatchUpdate(ctx, magazines); err != nil {
-			return code, errors.Wrap(ctx, err)
+			return code, stack.Wrap(ctx, err)
 		}
 	}
 
 	// Update manga data.
 	mangaE, err := mangaEntity.MangaFromNagato(ctx, manga)
 	if err != nil {
-		return http.StatusInternalServerError, errors.Wrap(ctx, err)
+		return http.StatusInternalServerError, stack.Wrap(ctx, err)
 	}
 
 	if code, err := s.manga.Update(ctx, *mangaE); err != nil {
-		return code, errors.Wrap(ctx, err)
+		return code, stack.Wrap(ctx, err)
 	}
 
 	// Insert manga stats history.
@@ -101,13 +100,13 @@ func (s *service) updateManga(ctx context.Context, id int64) (int, error) {
 		Voter:      mangaE.Voter,
 		Favorite:   mangaE.Favorite,
 	}); err != nil {
-		return code, errors.Wrap(ctx, err)
+		return code, stack.Wrap(ctx, err)
 	}
 
 	// Queue related manga.
 	for _, r := range manga.RelatedManga {
-		if err := s.publisher.PublishParseManga(ctx, publisherEntity.ParseMangaRequest{ID: int64(r.Manga.ID)}); err != nil {
-			return http.StatusInternalServerError, errors.Wrap(ctx, err)
+		if err := s.publisher.PublishParseManga(ctx, int64(r.Manga.ID)); err != nil {
+			return http.StatusInternalServerError, stack.Wrap(ctx, err)
 		}
 	}
 
