@@ -69,6 +69,7 @@ func (s *service) consumeParseUserManga(ctx context.Context, data entity.Message
 		if err != nil {
 			return stack.Wrap(ctx, err)
 		}
+
 		if !isOld {
 			return nil
 		}
