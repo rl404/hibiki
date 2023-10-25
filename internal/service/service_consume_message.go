@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/publisher/entity"
@@ -24,23 +23,6 @@ func (s *service) ConsumeMessage(ctx context.Context, data entity.Message) error
 
 func (s *service) consumeParseManga(ctx context.Context, data entity.Message) error {
 	if !data.Forced {
-		if code, err := s.validateID(ctx, data.ID); err != nil {
-			if code != http.StatusNotFound {
-				return stack.Wrap(ctx, err)
-			}
-
-			// Delete existing data.
-			if _, err := s.manga.DeleteByID(ctx, data.ID); err != nil {
-				return stack.Wrap(ctx, err)
-			}
-
-			if _, err := s.userManga.DeleteByMangaID(ctx, data.ID); err != nil {
-				return stack.Wrap(ctx, err)
-			}
-
-			return nil
-		}
-
 		isOld, _, err := s.manga.IsOld(ctx, data.ID)
 		if err != nil {
 			return stack.Wrap(ctx, err)
@@ -49,11 +31,11 @@ func (s *service) consumeParseManga(ctx context.Context, data entity.Message) er
 		if !isOld {
 			return nil
 		}
-	} else {
-		// Delete existing empty id.
-		if _, err := s.emptyID.Delete(ctx, data.ID); err != nil {
-			return stack.Wrap(ctx, err)
-		}
+	}
+
+	// Delete existing empty id.
+	if _, err := s.emptyID.Delete(ctx, data.ID); err != nil {
+		return stack.Wrap(ctx, err)
 	}
 
 	if _, err := s.updateManga(ctx, data.ID); err != nil {
