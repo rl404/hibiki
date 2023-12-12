@@ -209,6 +209,7 @@ github.com/rl404/fairy/cache/inmemory
 github.com/rl404/fairy/cache/nop
 github.com/rl404/fairy/cache/redis
 github.com/rl404/fairy/errors/stack
+github.com/rl404/fairy/limit/atomic
 github.com/rl404/fairy/log
 github.com/rl404/fairy/log/chain
 github.com/rl404/fairy/log/newrelic
