@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/newrelic/go-agent/v3/newrelic"
+	"github.com/rl404/fairy/limit/atomic"
 	"github.com/rl404/nagato"
 )
 
@@ -16,6 +17,7 @@ type Client struct {
 // New to create new nagato (mal) client.
 func New(clientID, clientSecret string) *Client {
 	n := nagato.New(clientID)
+	n.SetLimiter(atomic.New(1, 5*time.Second))
 	n.SetHttpClient(&http.Client{
 		Timeout: 10 * time.Second,
 		Transport: newrelic.NewRoundTripper(&clientIDTransport{
