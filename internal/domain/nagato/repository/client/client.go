@@ -17,7 +17,7 @@ type Client struct {
 // New to create new nagato (mal) client.
 func New(clientID, clientSecret string) *Client {
 	n := nagato.New(clientID)
-	n.SetLimiter(atomic.New(1, 5*time.Second))
+	n.SetLimiter(atomic.New(1, 1*time.Second))
 	n.SetHttpClient(&http.Client{
 		Timeout: 10 * time.Second,
 		Transport: newrelic.NewRoundTripper(&clientIDTransport{
@@ -39,5 +39,6 @@ func (c *clientIDTransport) RoundTrip(req *http.Request) (*http.Response, error)
 		c.transport = http.DefaultTransport
 	}
 	req.Header.Add("X-MAL-CLIENT-ID", c.clientID)
+	req.Header.Add("User-Agent", "Hibiki/0.4.10 (github.com/rl404/hibiki)")
 	return c.transport.RoundTrip(req)
 }
