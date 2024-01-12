@@ -20,7 +20,7 @@ jobs:
         with:
           find: ${{ steps.tag_version.outputs.previous_version }}
           replace: ${{ steps.tag_version.outputs.new_version }}
-          include: "internal/domain/mal/repository/client/client.go"
+          include: "internal/domain/nagato/repository/client/client.go"
           regex: false
       - name: Push changes
         id: push_changes
