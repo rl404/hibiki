@@ -17,9 +17,9 @@ type Client struct {
 // New to create new nagato (mal) client.
 func New(clientID, clientSecret string) *Client {
 	n := nagato.New(clientID)
-	n.SetLimiter(atomic.New(1, 1*time.Second))
+	n.SetLimiter(atomic.New(1, 3*time.Second))
 	n.SetHttpClient(&http.Client{
-		Timeout: 10 * time.Second,
+		Timeout: 30 * time.Second,
 		Transport: newrelic.NewRoundTripper(&clientIDTransport{
 			clientID: clientID,
 		}),
