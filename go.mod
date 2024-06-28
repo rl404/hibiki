@@ -13,7 +13,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/swaggo/http-swagger/v2 v2.0.2
 	github.com/swaggo/swag v1.16.3
-	go.mongodb.org/mongo-driver v1.15.1
+	go.mongodb.org/mongo-driver v1.16.0
 	golang.org/x/text v0.16.0
 	google.golang.org/grpc v1.64.0
 )
@@ -58,7 +58,7 @@ require (
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
-	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
+	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.4.1 // indirect
 	github.com/redis/go-redis/v9 v9.2.1 // indirect
 	github.com/rs/zerolog v1.31.0 // indirect
