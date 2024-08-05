@@ -262,7 +262,7 @@ func (m *Mongo) convertSort(sort string) bson.D {
 	}
 
 	if sort[0] == '-' {
-		return bson.D{{Key: sort[1:], Value: -1}}
+		return bson.D{{Key: sort[1:], Value: -1}, {Key: "id", Value: 1}}
 	}
 
 	return bson.D{{Key: sort, Value: 1}, {Key: "id", Value: 1}}
