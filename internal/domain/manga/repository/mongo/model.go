@@ -247,11 +247,25 @@ func (m *Mongo) convertSort(sort string) bson.D {
 		sort += "_2"
 	}
 
-	if sort[0] == '-' {
-		return bson.D{{Key: sort[1:], Value: -1}}
+	if strings.Contains(sort, "rank") {
+		if sort[0] == '-' {
+			return bson.D{{Key: "has_rank", Value: 1}, {Key: sort[1:], Value: -1}, {Key: "id", Value: 1}}
+		}
+		return bson.D{{Key: "has_rank", Value: 1}, {Key: sort, Value: 1}, {Key: "id", Value: 1}}
 	}
 
-	return bson.D{{Key: sort, Value: 1}}
+	if strings.Contains(sort, "popularity") {
+		if sort[0] == '-' {
+			return bson.D{{Key: "has_popularity", Value: 1}, {Key: sort[1:], Value: -1}, {Key: "id", Value: 1}}
+		}
+		return bson.D{{Key: "has_popularity", Value: 1}, {Key: sort, Value: 1}, {Key: "id", Value: 1}}
+	}
+
+	if sort[0] == '-' {
+		return bson.D{{Key: sort[1:], Value: -1}, {Key: "id", Value: 1}}
+	}
+
+	return bson.D{{Key: sort, Value: 1}, {Key: "id", Value: 1}}
 }
 
 func (m *Mongo) getPipeline(stages ...bson.D) mongo.Pipeline {

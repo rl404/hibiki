@@ -179,7 +179,10 @@ func (m *Mongo) GetAll(ctx context.Context, data entity.GetAllRequest) ([]entity
 			"year":  bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.year", 0}}, 1, "$end_date.year"}},
 			"month": bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.month", 0}}, 1, "$end_date.month"}},
 			"day":   bson.M{"$cond": bson.A{bson.M{"$eq": bson.A{"$end_date.day", 0}}, 1, "$end_date.day"}},
-		}}}}}
+		}},
+		"has_rank":       bson.M{"$eq": bson.A{"$rank", 0}},
+		"has_popularity": bson.M{"$eq": bson.A{"$popularity", 0}},
+	}}}
 	matchStage := bson.D{}
 	projectStage := bson.D{}
 	sortStage := bson.D{{Key: "$sort", Value: m.convertSort(data.Sort)}}
