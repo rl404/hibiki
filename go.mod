@@ -15,7 +15,8 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/swaggo/http-swagger/v2 v2.0.2
 	github.com/swaggo/swag v1.16.4
-	go.mongodb.org/mongo-driver v1.17.1
+	go.mongodb.org/mongo-driver v1.10.2
+	go.mongodb.org/mongo-driver/v2 v2.0.0
 	golang.org/x/text v0.21.0
 	google.golang.org/grpc v1.69.2
 )
@@ -64,6 +65,7 @@ require (
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.4.4 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/redis/go-redis/v9 v9.6.1 // indirect
 	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/segmentio/go-camelcase v0.0.0-20160726192923-7085f1e3c734 // indirect
