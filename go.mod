@@ -8,14 +8,14 @@ require (
 	github.com/go-chi/chi/v5 v5.2.1
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/newrelic/go-agent/v3 v3.36.0
+	github.com/newrelic/go-agent/v3 v3.37.0
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.3
 	github.com/rl404/fairy v0.26.0
 	github.com/rl404/nagato v0.3.4
 	github.com/spf13/cobra v1.9.1
 	github.com/swaggo/http-swagger/v2 v2.0.2
 	github.com/swaggo/swag v1.16.4
-	go.mongodb.org/mongo-driver v1.17.2
+	go.mongodb.org/mongo-driver v1.17.3
 	golang.org/x/text v0.22.0
 	google.golang.org/grpc v1.70.0
 )
