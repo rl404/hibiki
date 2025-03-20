@@ -211,7 +211,7 @@ github.com/newrelic/go-agent/v3/integrations/nrgrpc
 # github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.3
 ## explicit; go 1.19
 github.com/newrelic/go-agent/v3/integrations/nrmongo
-# github.com/redis/go-redis/v9 v9.6.1
+# github.com/redis/go-redis/v9 v9.6.3
 ## explicit; go 1.18
 github.com/redis/go-redis/v9
 github.com/redis/go-redis/v9/internal
