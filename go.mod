@@ -2,7 +2,7 @@ module github.com/rl404/hibiki
 
 go 1.23.0
 
-toolchain go1.24.1
+toolchain go1.24.2
 
 require (
 	github.com/go-chi/chi/v5 v5.2.1
@@ -17,7 +17,7 @@ require (
 	github.com/swaggo/swag v1.16.4
 	go.mongodb.org/mongo-driver v1.17.3
 	golang.org/x/text v0.23.0
-	google.golang.org/grpc v1.71.0
+	google.golang.org/grpc v1.71.1
 )
 
 require (
