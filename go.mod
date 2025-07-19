@@ -8,13 +8,13 @@ require (
 	github.com/go-chi/chi/v5 v5.2.2
 	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/newrelic/go-agent/v3 v3.39.0
-	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.3
+	github.com/newrelic/go-agent/v3 v3.40.1
+	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.4
 	github.com/rl404/fairy v0.26.0
 	github.com/rl404/nagato v0.4.1
 	github.com/spf13/cobra v1.9.1
 	github.com/swaggo/http-swagger/v2 v2.0.2
-	github.com/swaggo/swag v1.16.4
+	github.com/swaggo/swag v1.16.5
 	go.mongodb.org/mongo-driver v1.17.4
 	golang.org/x/text v0.27.0
 	google.golang.org/grpc v1.73.0
@@ -83,6 +83,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	golang.org/x/crypto v0.39.0 // indirect
+	golang.org/x/mod v0.25.0 // indirect
 	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
