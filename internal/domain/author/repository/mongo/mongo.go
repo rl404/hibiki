@@ -9,8 +9,8 @@ import (
 	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/author/entity"
 	"github.com/rl404/hibiki/internal/errors"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // Mongo contains functions for author mongodb.

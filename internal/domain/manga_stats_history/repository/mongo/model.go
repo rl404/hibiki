@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/rl404/hibiki/internal/domain/manga_stats_history/entity"
-	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
 type mangaStatsHistory struct {

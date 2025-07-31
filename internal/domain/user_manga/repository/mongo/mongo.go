@@ -9,10 +9,9 @@ import (
 	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/user_manga/entity"
 	"github.com/rl404/hibiki/internal/errors"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 // Mongo contains functions for user_manga mongodb.
@@ -73,7 +72,7 @@ func (m *Mongo) DeleteByMangaID(ctx context.Context, mangaID int64) (int, error)
 func (m *Mongo) IsOld(ctx context.Context, username string) (bool, int, error) {
 	filter := bson.M{
 		"username":   username,
-		"updated_at": bson.M{"$gte": primitive.NewDateTimeFromTime(time.Now().Add(-m.age))},
+		"updated_at": bson.M{"$gte": bson.NewDateTimeFromTime(time.Now().Add(-m.age))},
 	}
 
 	if err := m.db.FindOne(ctx, filter).Decode(&userManga{}); err != nil {
@@ -88,16 +87,10 @@ func (m *Mongo) IsOld(ctx context.Context, username string) (bool, int, error) {
 
 // GetOldUsernames to get old usernames.
 func (m *Mongo) GetOldUsernames(ctx context.Context) ([]string, int, error) {
-	res, err := m.db.Distinct(ctx, "username", bson.M{"updated_at": bson.M{"$lte": primitive.NewDateTimeFromTime(time.Now().Add(-m.age))}})
-	if err != nil {
+	var usernames []string
+	if err := m.db.Distinct(ctx, "username", bson.M{"updated_at": bson.M{"$lte": bson.NewDateTimeFromTime(time.Now().Add(-m.age))}}).Decode(&usernames); err != nil {
 		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
 	}
-
-	usernames := make([]string, len(res))
-	for i, r := range res {
-		usernames[i] = r.(string)
-	}
-
 	return usernames, http.StatusOK, nil
 }
 

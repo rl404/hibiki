@@ -2,18 +2,17 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
 	"os"
 	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/newrelic/go-agent/v3/integrations/nrmongo"
+	"github.com/newrelic/go-agent/v3/integrations/nrmongo-v2"
 	"github.com/rl404/hibiki/internal/utils"
 	"github.com/rl404/hibiki/pkg/cache"
 	"github.com/rl404/hibiki/pkg/pubsub"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 type config struct {
@@ -149,11 +148,8 @@ func getConfig() (*config, error) {
 func newDB(cfg dbConfig) (*mongo.Database, error) {
 	nrMongo := nrmongo.NewCommandMonitor(nil)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
 	// Start connection.
-	client, err := mongo.Connect(ctx, options.
+	client, err := mongo.Connect(options.
 		Client().
 		ApplyURI(cfg.Address).
 		SetAuth(options.Credential{
@@ -165,11 +161,11 @@ func newDB(cfg dbConfig) (*mongo.Database, error) {
 		return nil, err
 	}
 
-	ctx2, cancel2 := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel2()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	// Ping test.
-	if err = client.Ping(ctx2, nil); err != nil {
+	if err = client.Ping(ctx, nil); err != nil {
 		return nil, err
 	}
 
@@ -178,7 +174,7 @@ func newDB(cfg dbConfig) (*mongo.Database, error) {
 }
 
 func generateGoogleServiceAccountJSON(filename, value string) (string, error) {
-	if err := ioutil.WriteFile(filename, []byte(value), 0644); err != nil {
+	if err := os.WriteFile(filename, []byte(value), 0644); err != nil {
 		return "", err
 	}
 	return filename, nil
