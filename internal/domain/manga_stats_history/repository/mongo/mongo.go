@@ -7,7 +7,7 @@ import (
 	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/manga_stats_history/entity"
 	"github.com/rl404/hibiki/internal/errors"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 // Mongo contains functions for manga_stats_history mongodb.

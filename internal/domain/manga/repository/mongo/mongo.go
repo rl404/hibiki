@@ -9,10 +9,9 @@ import (
 	"github.com/rl404/fairy/errors/stack"
 	"github.com/rl404/hibiki/internal/domain/manga/entity"
 	"github.com/rl404/hibiki/internal/errors"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 // Mongo contains functions for manga mongodb.
@@ -81,9 +80,9 @@ func (m *Mongo) IsOld(ctx context.Context, id int64) (bool, int, error) {
 	filter := bson.M{
 		"id": id,
 		"$or": bson.A{
-			bson.M{"status": bson.M{"$in": []entity.Status{entity.StatusFinished, entity.StatusHiatus, entity.StatusDiscontinued}}, "updated_at": bson.M{"$gte": primitive.NewDateTimeFromTime(time.Now().Add(-m.finishedAge))}},
-			bson.M{"status": entity.StatusReleasing, "updated_at": bson.M{"$gte": primitive.NewDateTimeFromTime(time.Now().Add(-m.releasingAge))}},
-			bson.M{"status": entity.StatusNotYet, "updated_at": bson.M{"$gte": primitive.NewDateTimeFromTime(time.Now().Add(-m.notYetAge))}},
+			bson.M{"status": bson.M{"$in": []entity.Status{entity.StatusFinished, entity.StatusHiatus, entity.StatusDiscontinued}}, "updated_at": bson.M{"$gte": bson.NewDateTimeFromTime(time.Now().Add(-m.finishedAge))}},
+			bson.M{"status": entity.StatusReleasing, "updated_at": bson.M{"$gte": bson.NewDateTimeFromTime(time.Now().Add(-m.releasingAge))}},
+			bson.M{"status": entity.StatusNotYet, "updated_at": bson.M{"$gte": bson.NewDateTimeFromTime(time.Now().Add(-m.notYetAge))}},
 		},
 	}
 
@@ -132,7 +131,7 @@ func (m *Mongo) GetIDs(ctx context.Context) ([]int64, int, error) {
 func (m *Mongo) getOldIDs(ctx context.Context, statuses []entity.Status, age time.Duration) ([]int64, int, error) {
 	cursor, err := m.db.Find(ctx, bson.M{
 		"status":     bson.M{"$in": statuses},
-		"updated_at": bson.M{"$lte": primitive.NewDateTimeFromTime(time.Now().Add(-age))},
+		"updated_at": bson.M{"$lte": bson.NewDateTimeFromTime(time.Now().Add(-age))},
 	}, options.Find().SetProjection(bson.M{"id": 1}))
 	if err != nil {
 		return nil, http.StatusInternalServerError, stack.Wrap(ctx, err, errors.ErrInternalDB)
