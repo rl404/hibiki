@@ -12,7 +12,7 @@ require (
 	github.com/rl404/nagato v0.4.1
 	github.com/spf13/cobra v1.9.1
 	github.com/swaggo/http-swagger/v2 v2.0.2
-	github.com/swaggo/swag v1.16.5
+	github.com/swaggo/swag v1.16.6
 	go.mongodb.org/mongo-driver/v2 v2.2.2
 	golang.org/x/text v0.27.0
 	google.golang.org/grpc v1.74.2
