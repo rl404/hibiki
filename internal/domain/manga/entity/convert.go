@@ -136,5 +136,6 @@ func nagatoToRelation(t nagato.RelationType) Relation {
 		nagato.RelationSpinOff:            RelationSpinOff,
 		nagato.RelationOther:              RelationOther,
 		nagato.RelationCharacter:          RelationCharacter,
+		nagato.RelationAdaptation:         RelationAdaptation,
 	}[t]
 }
