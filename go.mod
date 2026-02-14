@@ -15,7 +15,7 @@ require (
 	github.com/swaggo/swag v1.16.6
 	go.mongodb.org/mongo-driver/v2 v2.5.0
 	golang.org/x/text v0.34.0
-	google.golang.org/grpc v1.79.0
+	google.golang.org/grpc v1.79.1
 )
 
 require (
