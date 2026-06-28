@@ -166,10 +166,14 @@ github.com/newrelic/go-agent/v3 v3.43.2 h1:I8M0Do/sPtbT0daCMrxc9G6GeST+eDgsIpRHF
 github.com/newrelic/go-agent/v3 v3.43.2/go.mod h1:MFXnCId5xXMIJI6A/kbkg0DO48EVTsKcmNijMYphzTg=
 github.com/newrelic/go-agent/v3 v3.43.3 h1:0A6DkUBYK2bidV6jJDJ1SD2XkRlg976nl+SiEqkGTUQ=
 github.com/newrelic/go-agent/v3 v3.43.3/go.mod h1:MFXnCId5xXMIJI6A/kbkg0DO48EVTsKcmNijMYphzTg=
+github.com/newrelic/go-agent/v3 v3.44.1 h1:O5DnT3U0cPEian06GL6AXrv4qHoOxvxvAD7shqRGyTQ=
+github.com/newrelic/go-agent/v3 v3.44.1/go.mod h1:5A2u/S0na/zIg5hS197XdK+ZkLqTRq5baFzJfVWrc3Q=
 github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.4.6 h1:L6kLcoDI8cEzWzqY19wmCHFCPehtxZoD9H0DmVBQuNk=
 github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.4.6/go.mod h1:cQS3+ztB2hkaszWxoufyxOxCVRcH4rH5KcuAilVRigs=
 github.com/newrelic/go-agent/v3/integrations/nrmongo-v2 v1.0.1 h1:hWGdGY/bPoqkiFhkCqZuIiJgQbur9wF+0Ck3F2/yuAI=
 github.com/newrelic/go-agent/v3/integrations/nrmongo-v2 v1.0.1/go.mod h1:jz2hRjQ6VkG/pNbFju9o11SGHVA1basYbO6XDq7Nxn0=
+github.com/newrelic/go-agent/v3/integrations/nrmongo-v2 v1.0.2 h1:RgglCpUVj8toIAmEJc1xQ7hXXbvIybcG5Z7IblcDlAw=
+github.com/newrelic/go-agent/v3/integrations/nrmongo-v2 v1.0.2/go.mod h1:HTH8ICacvVIkOajchsyriMP6zc6uVgPL0KsXf2W77N0=
 github.com/newrelic/go-agent/v3/integrations/nrsecurityagent v1.1.0 h1:gqkTDYUHWUyiG+u0PJQCRh98rcHLxP/w7GtIbJDVULY=
 github.com/newrelic/go-agent/v3/integrations/nrsecurityagent v1.1.0/go.mod h1:3wugGvRmOVYov/08y+D8tB1uYIZds5bweVdr5vo4Gbs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
@@ -232,6 +236,8 @@ go.mongodb.org/mongo-driver/v2 v2.5.1 h1:j2U/Qp+wvueSpqitLCSZPT/+ZpVc1xzuwdHWwl7
 go.mongodb.org/mongo-driver/v2 v2.5.1/go.mod h1:yOI9kBsufol30iFsl1slpdq1I0eHPzybRWdyYUs8K/0=
 go.mongodb.org/mongo-driver/v2 v2.6.0 h1:b9sJOYrkmt4l8bY43ZenFBcPlhYIjaOfYHLtbB/5qi8=
 go.mongodb.org/mongo-driver/v2 v2.6.0/go.mod h1:yOI9kBsufol30iFsl1slpdq1I0eHPzybRWdyYUs8K/0=
+go.mongodb.org/mongo-driver/v2 v2.7.0 h1:RO+zqavD2/GCL3cxOMyZhx6R9Irzr8/6gsoqx5tcY/c=
+go.mongodb.org/mongo-driver/v2 v2.7.0/go.mod h1:yOI9kBsufol30iFsl1slpdq1I0eHPzybRWdyYUs8K/0=
 go.opencensus.io v0.24.0 h1:y73uSU6J157QMP2kn2r30vwW1A2W2WFwSCGnAVxeaD0=
 go.opencensus.io v0.24.0/go.mod h1:vNK8G9p7aAivkbmorf4v+7Hgx+Zs0yY+0fOtgBfjQKo=
 go.opentelemetry.io/auto/sdk v1.2.1 h1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64=

@@ -197,7 +197,7 @@ github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.20
 ## explicit; go 1.15
 github.com/mattn/go-isatty
-# github.com/newrelic/go-agent/v3 v3.43.3
+# github.com/newrelic/go-agent/v3 v3.44.1
 ## explicit; go 1.25
 github.com/newrelic/go-agent/v3/internal
 github.com/newrelic/go-agent/v3/internal/cat
@@ -211,8 +211,8 @@ github.com/newrelic/go-agent/v3/newrelic
 # github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.4.6
 ## explicit; go 1.22
 github.com/newrelic/go-agent/v3/integrations/nrgrpc
-# github.com/newrelic/go-agent/v3/integrations/nrmongo-v2 v1.0.1
-## explicit; go 1.22
+# github.com/newrelic/go-agent/v3/integrations/nrmongo-v2 v1.0.2
+## explicit; go 1.25
 github.com/newrelic/go-agent/v3/integrations/nrmongo-v2
 # github.com/redis/go-redis/v9 v9.11.0
 ## explicit; go 1.18
@@ -294,7 +294,7 @@ github.com/xdg-go/stringprep
 # github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78
 ## explicit; go 1.17
 github.com/youmark/pkcs8
-# go.mongodb.org/mongo-driver/v2 v2.6.0
+# go.mongodb.org/mongo-driver/v2 v2.7.0
 ## explicit; go 1.19
 go.mongodb.org/mongo-driver/v2/bson
 go.mongodb.org/mongo-driver/v2/event
