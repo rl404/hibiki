@@ -1,10 +1,8 @@
-version: "2.4"
-
 services:
   hibiki-api:
     container_name: hibiki-api
     image: rl404/hibiki:latest
-    command: ./hibiki server
-    restart: always
-    env_file: ./../.env
+    command: server
+    restart: unless-stopped
+    env_file: ../.env
     network_mode: host

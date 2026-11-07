@@ -1,10 +1,9 @@
 # Hibiki
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/rl404/hibiki)](https://goreportcard.com/report/github.com/rl404/hibiki)
 ![License: MIT](https://img.shields.io/github/license/rl404/hibiki)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/rl404/hibiki)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/rl404/hibiki)](https://hub.docker.com/r/rl404/hibiki)
-[![publish & deploy](https://github.com/rl404/hibiki/actions/workflows/publish-deploy.yml/badge.svg)](https://github.com/rl404/hibiki/actions/workflows/publish-deploy.yml)
+[![CI](https://github.com/rl404/hibiki/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/rl404/hibiki/actions/workflows/ci.yml)
 
 Hibiki is [MyAnimeList](https://myanimelist.net/) manga database dump and REST API.
 
@@ -59,22 +58,22 @@ _More will be coming soon..._
 
 1. Clone the repository.
 
-```sh
-git clone github.com/rl404/hibiki
-```
+   ```sh
+   git clone github.com/rl404/hibiki
+   ```
 
 2. Rename `.env.sample` to `.env` and modify the values according to your setup.
 3. Run. You need at least 2 consoles/terminals.
 
-```sh
-# Run the API.
-make
+   ```sh
+   # Run the API.
+   make api
 
-# Run the consumer.
-make consumer
-```
+   # Run the consumer.
+   make consumer
+   ```
 
-6. [localhost:45002](http://localhost:45002) is ready (port may varies depend on your `.env`).
+4. [localhost:45002](http://localhost:45002) is ready (port may varies depend on your `.env`).
 
 #### Other commands
 
@@ -84,40 +83,43 @@ make cron-update
 
 # Fill missing manga data.
 make cron-fill
+
+# Show help.
+make help
 ```
 
 ### With [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
 
 1. Clone the repository.
 
-```sh
-git clone github.com/rl404/hibiki
-```
+   ```sh
+   git clone github.com/rl404/hibiki
+   ```
 
 2. Rename `.env.sample` to `.env` and modify the values according to your setup.
 3. Get docker image.
 
-```sh
-# Pull existing image.
-docker pull rl404/hibiki
+   ```sh
+   # Pull existing image.
+   docker pull rl404/hibiki
 
-# Or build your own.
-make docker-build
-```
+   # Or build your own.
+   make docker-build
+   ```
 
 4. Run the container. You need at least 2 consoles/terminals.
 
-```sh
-# Run the API.
-make docker-api
+   ```sh
+   # Run the API.
+   make docker-api
 
-# Run the consumer.
-make docker-consumer
-```
+   # Run the consumer.
+   make docker-consumer
+   ```
 
 5. [localhost:45002](http://localhost:45002) is ready (port may varies depend on your `.env`).
 
-#### Other commands
+#### Other Docker Commands
 
 ```sh
 # Update old manga data.
@@ -128,6 +130,9 @@ make docker-cron-fill
 
 # Stop running containers.
 make docker-stop
+
+# Show help.
+make help
 ```
 
 ## Environment Variables
@@ -165,6 +170,9 @@ make docker-stop
 | `HIBIKI_CRON_USER_ANIME_AGE`   |             `7`             | Age of old user manga list (in days).                                                                      |
 | `HIBIKI_NEWRELIC_NAME`         |          `hibiki`           | Newrelic application name.                                                                                 |
 | `HIBIKI_NEWRELIC_LICENSE_KEY`  |                             | Newrelic license key.                                                                                      |
+| `HIBIKI_LOG_LEVEL`             |            `-1`             | Log level                                                                                                  |
+| `HIBIKI_LOG_JSON`              |           `false`           | Log JSON format                                                                                            |
+| `HIBIKI_LOG_COLOR`             |           `true`            | Log color                                                                                                  |
 
 ## Trivia
 

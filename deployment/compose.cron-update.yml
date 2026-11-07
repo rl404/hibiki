@@ -1,9 +1,7 @@
-version: "2.4"
-
-services:
+ervices:
   hibiki-cron-update:
     container_name: hibiki-cron-update
     image: rl404/hibiki:latest
-    command: ./hibiki cron update
-    env_file: ./../.env
+    command: cron update
+    env_file: ../.env
     network_mode: host
