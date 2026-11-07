@@ -32,14 +32,6 @@ func main() {
 		},
 	})
 
-	cmd.AddCommand(&cobra.Command{
-		Use:   "migrate",
-		Short: "Migrate database",
-		RunE: func(*cobra.Command, []string) error {
-			return migrate()
-		},
-	})
-
 	cronCmd := cobra.Command{
 		Use:   "cron",
 		Short: "Cron",

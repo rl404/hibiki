@@ -4,8 +4,7 @@ COMPOSE ?= docker compose
 # Compose files helper.
 compose = $(COMPOSE) -f deployment/compose.$(1).yml -p hibiki-$(2)
 
-.PHONY: docker-lint docker-build docker-migrate \
-	docker-api docker-consumer docker-cron-update docker-cron-fill docker-stop
+.PHONY: docker-lint docker-build docker-api docker-consumer docker-cron-update docker-cron-fill docker-stop
 
 ##@ Docker Tools
 
@@ -18,10 +17,6 @@ docker-lint: ## Run linter in docker.
 docker-build: ## Build docker image then prune the builder image.
 	@$(call compose,build,build) --profile build build 
 	@docker image prune -f --filter label=stage=hibiki_builder
-
-docker-migrate: ## Start migrate container.
-	@$(call compose,migrate,migrate) --profile migrate up
-	@$(call compose,migrate,migrate) --profile migrate rm -f
 
 docker-api: ## Start API container.
 	@$(call compose,api,api) up -d

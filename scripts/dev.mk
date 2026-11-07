@@ -11,7 +11,7 @@ BINARY_NAME := hibiki
 BINARY_PATH := $(CMD_PATH)/$(BINARY_NAME)
 
 .PHONY: fmt clean lint swagger install-linter install-swagger \
-	build api migrate consumer cron-update cron-fill
+	build api consumer cron-update cron-fill
 
 ##@ Tools
 
@@ -37,9 +37,6 @@ install-swagger: ## Install swag.
 
 build: clean fmt ## Build the project executable binary. 
 	@$(GO) build -o $(BINARY_PATH) -v $(CMD_PATH)
-
-migrate: build ## Build and migrate database.
-	@$(BINARY_PATH) migrate
 
 api: build ## Build and run API server.
 	@$(BINARY_PATH) server
