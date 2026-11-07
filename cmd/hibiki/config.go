@@ -93,7 +93,7 @@ type newrelicConfig struct {
 	LicenseKey string `envconfig:"LICENSE_KEY"`
 }
 
-const envPath = "../../.env"
+const envPath = ".env"
 const envPrefix = "HIBIKI"
 const pubsubTopic = "hibiki-pubsub"
 
