@@ -1,0 +1,16 @@
+services:
+  hibiki-lint:
+    container_name: hibiki-lint
+    image: golangci/golangci-lint:v2.15.0
+    working_dir: /hibiki
+    command: make lint
+    environment:
+      - GOFLAGS=-mod=vendor
+    volumes:
+      - ../:/hibiki:ro
+      - go-mod-cache:/go/pkg/mod
+    profiles:
+      - lint
+
+volumes:
+  go-mod-cache:
